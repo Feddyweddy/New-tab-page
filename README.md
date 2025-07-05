@@ -24,16 +24,18 @@ You can use any web server of your choice:
 
 ## Features
 
-*   **Link Organization**: Group your links into sections (e.g., "Watch", "Work", "Social").
+*   **Link Organization**: Group your links into sections by editing the `links.json` file (e.g., "Watch", "Work", "Social").
 *   **Custom Styling**: Use the in-page menu to adjust shortcut size, spacing, background image, and more.
 *   **Dark/Light Mode**: Toggle between themes.
 *   **Collapsible Sections**: Hide less-used shortcuts behind a chevron to keep your dashboard tidy.
-*   **Drag & Drop**: Easily reorder your shortcuts (requires a local web server).
+*   **Multiple Link Files**: Switch between different link collections by changing the filename in the code.
 *   **Configuration**: Export and import your entire setup, including styling and links.
 
 ## `links.json` Format
 
 The `links.json` file contains the data for all the shortcuts. It's a JSON object where each key is a section title, and the value is an array of link objects.
+
+**Note**: All changes to shortcuts (adding, editing, deleting, or reorganizing) must be done by manually editing the `links.json` file. The web interface is read-only and only displays the links from the JSON file.
 
 Each link object has the following structure:
 
@@ -72,3 +74,14 @@ Each link object has the following structure:
 In this example:
 *   The "Watch" section has two links. "YouTube" will be visible by default, and "Twitch" will be hidden in the collapsible area.
 *   The "Social" section has one link, "Twitter", which will be visible.
+
+## Using Different Link Files
+
+The dashboard can load different link files, making it easy to have separate collections (e.g., work links, personal links, gaming links). To switch between files:
+
+1. Open `index.html` in a text editor
+2. Find the line: `const LINKS_FILENAME = 'links.json';`
+3. Change `'links.json'` to your desired filename (e.g., `'links-work.json'`, `'links-gaming.json'`)
+4. Create the corresponding JSON file with your links
+
+This allows you to maintain multiple link collections while keeping private links separate from publicly shared ones.
