@@ -1,0 +1,1744 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.2/color-thief.umd.js"></script>
+  <meta charset="utf-8" />
+  <title>Links</title>
+  <style>
+    :root {
+      --light-text: #ffffff;
+      --dark-text: #000000;
+      --light-scfill: 150, 150, 150;
+      --dark-scfill: 50, 50, 50;
+      --shortcut-size: 140px;
+      --gap-size: 10px;
+      --shadow-size: 3px;
+}
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+      background-color: var(--light-bg);
+      color: var(--light-text);
+      transition: background-color 0.3s, color 0.3s;
+      width: 100%;
+      height: 100%;
+    }
+
+    body.dark-mode {
+      color: var(--dark-text);
+    }
+
+    .background-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url("https://i.imgur.com/yXXStJ4.jpeg") no-repeat center center fixed;
+      background-size: cover;
+      z-index: -1;
+      filter:brightness(1) contrast(1);
+    }
+    /* .background-overlay.dark-mode {
+      filter:brightness(0.6) contrast(1);
+    } */
+
+    .toggle {
+      position: absolute;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: inherit;
+      font-size: 1rem;
+      top: 0px;
+      right: 0px;
+    }
+    .toggle.dark-mode {
+      rotate: 180deg;
+      top: -3px;
+      right: 0px;
+    }
+
+    #container {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      margin-top: 30px;
+      margin-left: 30px;
+      gap: 20px;
+      max-width: calc(100vw - 60px);
+    }
+
+    .section-title {
+      text-align: left !important;
+      margin: 15px 0 0 0;
+      font-size: 1.2rem;
+      color: inherit;
+      margin-right: 80%;
+    }
+
+    .section-title,
+    .title {
+      filter: drop-shadow(0 0 12px rgb(var(--light-scfill)));
+    }
+    .section-title.dark-mode {
+      filter: drop-shadow(0 0 12px white);
+    } 
+
+    .section-row {
+      display: flex;
+      flex-flow: row wrap;
+      overflow-x: auto;
+      margin: 10px 0 0 0;
+      padding: 10px;
+      justify-content: flex-start;
+      gap: var(--gap-size) var(--gap-size);
+      background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.2) 80%, transparent 100%);
+      border-radius: 30px;
+    }
+
+    .section-title,
+    .shortcut,
+    .shortcutimg,
+    .section-row {
+    transition: all 0.5s ease-in-out;
+  }
+
+    @media (max-width: 719px) {
+      .shortcut {
+        max-width: 110px;
+        max-height: 110px;
+        margin: 15px 5px;
+        transition: max-width 0.5s ease-in-out, max-height 0.5s ease-in-out, margin 0.5s ease-in-out;
+      }
+      .shortcut img {
+        max-width: 50px;
+        max-height: 50px;
+        transition: max-width 0.5s ease-in-out, max-height 0.5s ease-in-out;
+      }
+      .section-row {
+        gap: 15px 5px;
+      }
+    }
+    
+    .shortcut {
+      position: relative;
+      flex: 0 0 auto;
+      width: var(--shortcut-size);
+      height: var(--shortcut-size);
+      /* margin: 0 10px; */
+      border-radius: 25px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: inherit;
+      background: none;
+      background-size: cover;
+      background-position: center;
+      overflow: hidden;
+      opacity: 1;
+      
+    }
+
+    .shortcut:hover::before,
+    .shortcut:hover {
+      scale: 1.1;
+    }
+
+    .shortcut:hover .shortcutimg {
+      filter: drop-shadow(0 0 calc(2px * 1.1) black) drop-shadow(0 0 calc(var(--shadow-size) * 1.1) white);
+    }
+
+    .shortcut:hover .shortcutimg.dark-mode {
+      filter: drop-shadow(0 0 calc(2px * 1.1) rgb(229, 229, 229)) 
+              drop-shadow(0 0 calc(var(--shadow-size) * 1.1) black) 
+              drop-shadow(0 0 calc(8px * 1.1) rgb(var(--dark-scfill)));
+    }
+
+    .shortcut::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      filter: blur(12px) brightness(0.5) contrast(0.8) opacity(0.7);
+      transform: scale(0.95, 0.95) translate(0%, -10%);
+      opacity: 1;
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      z-index: 1;
+      background-image: var(--shortcut-background);
+      background-color: rgba(0,0,0,0.4);
+    }
+    .shortcut.dark-mode::before {
+      background-color: rgb(65, 65, 65);
+      filter: blur(12px) brightness(1) contrast(0.8) opacity(0.5);
+    }
+
+    .shortcutimg {
+      margin-top: 10px;
+      object-fit: contain;
+      position: relative;
+      width: 50%;
+      height: 50%;
+      z-index: 1;
+      filter: drop-shadow(0 0 2px black) drop-shadow(0 0 var(--shadow-size) white); /*drop-shadow(0 0 8px rgb(var(--light-scfill)))*/
+    }
+  
+    .shortcutimg.dark-mode {
+      filter: drop-shadow(0 0 2px rgb(229, 229, 229)) drop-shadow(0 0 var(--shadow-size) black) drop-shadow(0 0 8px rgb(var(--dark-scfill))) ;
+    }
+
+
+    .title {
+      position: relative;
+      z-index: 2;
+      margin-top: 10px;
+      margin-bottom: 5px;
+      text-align: center;
+    }
+    a {
+  text-decoration: none !important;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+    .config-buttons {
+  position: absolute;
+  top: 40px;
+  right: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.config-button {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.config-button:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+body.dark-mode .config-button {
+  background: rgba(255, 255, 255, 0.5);
+  color: black;
+}
+
+body.dark-mode .config-button:hover {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.edit-button {
+  position: absolute;
+  top: 10px;
+  right: 120px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.edit-button:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+body.dark-mode .edit-button {
+  background: rgba(255, 255, 255, 0.5);
+  color: black;
+}
+
+body.dark-mode .edit-button:hover {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.edit-mode .shortcut {
+  position: relative;
+}
+
+.delete-shortcut {
+  display: none;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  z-index: 3;
+  background: red;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
+
+.edit-shortcut {
+  display: none;
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  z-index: 3;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
+
+.edit-mode .delete-shortcut,
+.edit-mode .edit-shortcut {
+  display: block;
+}
+
+.add-shortcut {
+  display: none;
+  width: 140px;
+  height: 140px;
+  border: 2px dashed #ccc;
+  border-radius: 25px;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  background: rgba(255,255,255,0.1);
+}
+
+.edit-mode .add-shortcut {
+  display: flex;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 300px;
+}
+
+.modal-content input {
+  width: 100%;
+  margin: 10px 0;
+  padding: 5px;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 10px;
+}
+    
+    .burger-menu {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.burger-button {
+  width: 40px;
+  height: 40px;
+  background: rgba(0, 0, 0, 0.5);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  padding: 8px;
+}
+
+.burger-button span {
+  width: 24px;
+  height: 2px;
+  background: white;
+  transition: all 0.3s;
+}
+
+.burger-button.active span:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+.burger-button.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.burger-button.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(5px, -5px);
+}
+
+.menu-content {
+  position: fixed;
+  top: 70px;
+  right: -200px;
+  width: 150px;
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 5px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: right 0.3s;
+}
+
+.menu-content.active {
+  right: 20px;
+}
+
+body.dark-mode .burger-button {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+body.dark-mode .burger-button span {
+  background: black;
+}
+
+body.dark-mode .menu-content {
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.menu-button {
+  text-align: left;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+body.dark-mode .menu-button {
+  background: rgba(255, 255, 255, 0.5);
+  color: black;
+}
+
+.menu-button:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+body.dark-mode .menu-button:hover {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.menu-section {
+      padding: 5px;
+    }
+
+    .menu-section-title {
+      color: inherit;
+      font-size: 0.9em;
+      margin-bottom: 5px;
+      display: block;
+    }
+
+    .menu-input-group {
+      display: flex;
+      gap: 5px;
+      margin-bottom: 5px;
+    }
+
+    .menu-input {
+      flex: 1;
+      padding: 5px;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 3px;
+      background: rgba(0,0,0,0.3);
+      color: white;
+    }
+
+    body.dark-mode .menu-input {
+      background: rgba(255,255,255,0.3);
+      color: black;
+    }
+
+    .menu-button.small {
+      padding: 4px 8px;
+    }
+
+    .menu-slider-group {
+      margin: 10px 0;
+    }
+
+    .menu-slider-group label {
+      font-size: 0.8em;
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    .menu-slider {
+      width: 100%;
+      margin: 5px 0;
+    }
+    /* Add to existing styles */
+    .menu-checkbox-group {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin-top: 5px;
+    }
+
+    .menu-checkbox {
+        accent-color: rgba(255, 255, 255, 0.7);
+    }
+
+    body.dark-mode .menu-checkbox {
+        accent-color: rgba(0, 0, 0, 0.7);
+    }
+
+/* Add after the .shortcut styles */
+.shortcut.dragging {
+  opacity: 0.5;
+  cursor: move;
+}
+
+.shortcut.drag-over {
+  border: 2px dashed #ffffff;
+}
+
+.section-row.drag-active {
+  min-height: var(--shortcut-size);
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+}
+
+/* Collapsed shortcuts styles */
+.chevron-button {
+  position: relative;
+  width: 40px;
+  height: var(--shortcut-size);
+  /* background: rgba(255, 255, 255, 0.1); */
+  /* border: 2px dashed rgba(255, 255, 255, 0.3); */
+  border-radius: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  /* transition: all 0.3s ease; */
+  /* backdrop-filter: blur(10px); */
+  flex: 0 0 auto;
+}
+
+.chevron-button:hover,
+.chevron-button:focus {
+  /* background: rgba(255, 255, 255, 0.2); */
+  /* border-color: rgba(255, 255, 255, 0.5); */
+  /* scale: 1.05; */
+  outline: none;
+}
+
+.chevron-icon {
+  /* font-size: 18px; */
+  color: white;
+  /* transition: transform 0.3s ease; */
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+}
+
+.chevron-button.expanded .chevron-icon {
+  transform: rotate(135deg);
+}
+
+body.dark-mode .chevron-icon {
+  /* color: #333; */
+  border-color: white;
+}
+
+.hidden-shortcuts-container {
+  display: flex;
+  gap: var(--gap-size);
+  max-width: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-width 0.4s ease, opacity 0.4s ease;
+  flex-wrap: nowrap;
+}
+
+.hidden-shortcuts-container.expanded {
+  max-width: 2000px; /* Large enough to accommodate hidden shortcuts */
+  opacity: 1;
+}
+
+.hidden-shortcut {
+  position: relative;
+  flex: 0 0 auto;
+  width: var(--shortcut-size);
+  height: var(--shortcut-size);
+  border-radius: 25px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: inherit;
+  background: none;
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+  /* opacity: 0.7; */
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.hidden-shortcut:hover {
+  opacity: 1;
+  scale: 1.05;
+}
+
+.hidden-shortcut::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  filter: blur(12px) brightness(0.5) contrast(0.8) opacity(0.7);
+  transform: scale(0.95, 0.95) translate(0%, -10%);
+  opacity: 1;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 1;
+  background-image: var(--shortcut-background);
+  background-color: rgba(0,0,0,0.4);
+}
+
+body.dark-mode .hidden-shortcut::before {
+  background-color: rgb(65, 65, 65);
+  filter: blur(12px) brightness(1) contrast(0.8) opacity(0.5);
+}
+
+.hidden-shortcut .shortcutimg {
+  margin-top: 10px;
+  object-fit: contain;
+  position: relative;
+  width: 50%;
+  height: 50%;
+  z-index: 2;
+  filter: drop-shadow(0 0 2px black) drop-shadow(0 0 var(--shadow-size) white);
+}
+
+body.dark-mode .hidden-shortcut .shortcutimg {
+  filter: drop-shadow(0 0 2px rgb(229, 229, 229)) drop-shadow(0 0 var(--shadow-size) black) drop-shadow(0 0 8px rgb(var(--dark-scfill)));
+}
+
+.hidden-shortcut .title {
+  position: relative;
+  z-index: 2;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  text-align: center;
+}
+  </style>
+</head>
+
+<body>
+  <div class="background-overlay"></div>
+  <div class="burger-menu">
+    <button class="burger-button" onclick="toggleMenu()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <div class="menu-content">
+      <button class="menu-button" onclick="toggleMode()">Toggle theme</button>
+      <button class="menu-button" onclick="toggleEditMode()">Edit shortcuts</button>
+      <button class="menu-button" onclick="exportConfig()">Export config</button>
+      <button class="menu-button" onclick="importConfig()">Import config</button>
+      <hr style="border: 1px solid rgba(255,255,255,0.2); width: 90%; margin: 5px auto;">
+      <!-- Add Shortcut Size section -->
+      <div class="menu-section">
+        <span class="menu-section-title">Shortcut Size</span>
+        <div class="menu-slider-group">
+          <label>Shortcut size: <span id="shortcutSizeValue">124</span>px</label>
+          <input type="range" id="shortcutSizeSlider" min="64" max="192" value="124" class="menu-slider">
+        </div>
+        <div class="menu-slider-group">
+          <label>Gap size: <span id="gapSizeValue">10</span>px</label>
+          <input type="range" id="gapSizeSlider" min="5" max="124" value="10" class="menu-slider">
+          <div class="menu-slider-group">
+            <label>Shadow: <span id="shadowValue">3</span>px</label>
+            <input type="range" id="shadowSlider" min="3" max="15" value="3" class="menu-slider">
+          </div>
+          <div class="menu-checkbox-group">
+            <input type="checkbox" id="autoFitEnabled" class="menu-checkbox">
+            <label for="autoFitEnabled">Auto-fit sizes</label>
+          </div>
+          <button class="menu-button small" onclick="autoAdjustGap()">Auto-fit</button>
+        </div>
+        <div class="menu-input-group">
+          <label>Max columns:</label>
+          <select id="maxColumnsSelect" class="menu-input">
+            <option value="unlimited">Unlimited</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+          </select>
+        </div>
+      </div>
+      <hr style="border: 1px solid rgba(255,255,255,0.2); width: 90%; margin: 5px auto;">
+      <!-- Add new background image section -->
+      <div class="menu-section">
+        <span class="menu-section-title">Background Image</span>
+        <div class="menu-input-group">
+          <input type="text" id="bgUrlInput" placeholder="Image URL" class="menu-input" style="width: 100%">
+          <button class="menu-button small" onclick="setBackgroundFromUrl()">Set</button>
+        </div>
+        <div class="menu-input-group">
+          <input type="file" id="bgFileInput" accept="image/*" class="menu-input" style="display: none">
+          <button class="menu-button" onclick="document.getElementById('bgFileInput').click()">Upload Image</button>
+        </div>
+        <button class="menu-button" onclick="toggleDisplaySettings()">Display Settings</button>
+      </div>
+      <hr style="border: 1px solid rgba(255,255,255,0.2); width: 90%; margin: 5px auto;">
+      <!-- Display settings section (hidden by default) -->
+      <div id="displaySettings" class="menu-section">
+        <span class="menu-section-title">Display Settings</span>
+        <div class="menu-slider-group">
+          <label>Blur: <span id="blurValue">0</span>px</label>
+          <input type="range" id="blurSlider" min="0" max="20" value="0" class="menu-slider">
+        </div>
+        <div class="menu-slider-group">
+          <label>Brightness: <span id="brightnessValue">100</span></label>
+          <input type="range" id="brightnessSlider" min="1" max="100" value="100" class="menu-slider">
+        </div>
+        <div class="menu-slider-group">
+          <label>Contrast: <span id="contrastValue">1.0</span></label>
+          <input type="range" id="contrastSlider" min="1" max="200" value="100" class="menu-slider">
+        </div>
+      </div>
+      <hr style="border: 1px solid rgba(255,255,255,0.2); width: 90%; margin: 5px auto;">
+      <!-- Original persist settings button -->
+      <a href="#" class="menu-button" onclick="requestStoragePermission(event)">
+        Persist settings
+      </a>
+    </div>
+  </div>
+  
+  <div id="editModal" class="modal">
+    <div class="modal-content">
+      <h3>Edit Shortcut</h3>
+      <input type="text" id="editTitle" placeholder="Title">
+      <input type="text" id="editUrl" placeholder="URL">
+      <input type="text" id="editImage" placeholder="Image URL">
+      <div style="display: flex; align-items: center; gap: 10px; margin: 10px 0;">
+        <input type="checkbox" id="editHidden">
+        <label for="editHidden" style="color: #333;">Hide in collapsed view</label>
+      </div>
+      <div class="modal-buttons">
+        <button onclick="closeModal()">Cancel</button>
+        <button onclick="saveShortcut()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="container"></div>
+
+  <script>
+    let editMode = false;
+    let currentEditingShortcut = null;
+
+    function toggleEditMode() {
+      editMode = !editMode;
+      document.body.classList.toggle('edit-mode');
+      refreshUI();
+    }
+
+    function refreshUI() {
+      const container = document.getElementById('container');
+      container.innerHTML = '';
+      loadLinks();
+    }
+
+    async function loadLinks() {
+  let data;
+  try {
+    console.log('Attempting to load links.json...');
+    const response = await fetch('links.json');
+    console.log('Response status:', response.status, response.statusText);
+    if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    data = await response.json();
+    console.log('Successfully loaded links.json with', Object.keys(data).length, 'sections');
+  } catch (error) {
+    console.error('Could not load links.json, using sample data:', error);
+    alert('Could not load your shortcuts from links2.json. Using sample data instead. Make sure you\'re accessing the page through a web server (e.g., http://localhost:8000)');
+    // Fallback sample data when file can't be loaded (e.g., CORS issues)
+    data = {
+      "Watch": [
+        {
+          "title": "YouTube",
+          "url": "https://www.youtube.com/",
+          "image": "https://www.google.com/s2/favicons?domain=youtube.com&sz=64"
+        },
+        {
+          "title": "Netflix",
+          "url": "https://www.netflix.com/",
+          "image": "https://www.google.com/s2/favicons?domain=netflix.com&sz=64"
+        },
+        {
+          "title": "Twitch",
+          "url": "https://www.twitch.tv/",
+          "image": "https://www.google.com/s2/favicons?domain=twitch.tv&sz=64",
+          "hidden": true
+        }
+      ],
+      "Social": [
+        {
+          "title": "Twitter",
+          "url": "https://twitter.com/",
+          "image": "https://www.google.com/s2/favicons?domain=twitter.com&sz=64"
+        },
+        {
+          "title": "Reddit",
+          "url": "https://www.reddit.com/",
+          "image": "https://www.google.com/s2/favicons?domain=reddit.com&sz=64"
+        },
+        {
+          "title": "Instagram",
+          "url": "https://www.instagram.com/",
+          "image": "https://www.google.com/s2/favicons?domain=instagram.com&sz=64",
+          "hidden": true
+        },
+        {
+          "title": "TikTok",
+          "url": "https://www.tiktok.com/",
+          "image": "https://www.google.com/s2/favicons?domain=tiktok.com&sz=64",
+          "hidden": true
+        }
+      ],
+      "Work": [
+        {
+          "title": "Gmail",
+          "url": "https://mail.google.com/",
+          "image": "https://www.google.com/s2/favicons?domain=mail.google.com&sz=64"
+        },
+        {
+          "title": "GitHub",
+          "url": "https://github.com/",
+          "image": "https://www.google.com/s2/favicons?domain=github.com&sz=64"
+        },
+        {
+          "title": "Slack",
+          "url": "https://slack.com/",
+          "image": "https://www.google.com/s2/favicons?domain=slack.com&sz=64",
+          "hidden": true
+        }
+      ]
+    };
+  }
+  const container = document.getElementById('container');
+  
+  console.log('Rendering sections:', Object.keys(data));
+  console.log('Total sections to render:', Object.keys(data).length);
+
+  Object.entries(data).forEach(([sectionName, links]) => {
+    console.log(`Rendering section: ${sectionName} with ${links.length} shortcuts`);
+    // Create a section wrapper
+    const sectionWrapper = document.createElement('div');
+    sectionWrapper.className = 'section-wrapper';
+    sectionWrapper.style.cssText = 'display: flex; flex-direction: column; min-width: 300px; flex: 0 1 auto;';
+
+    const sectionTitle = document.createElement('h2');
+    sectionTitle.className = 'section-title';
+    sectionTitle.textContent = sectionName;
+    sectionWrapper.appendChild(sectionTitle);
+
+    const row = document.createElement('div');
+    row.className = 'section-row';
+    row.setAttribute('data-section', sectionName);
+
+    links.forEach((item, index) => {
+      // Skip hidden shortcuts - they'll be handled separately
+      if (item.hidden) return;
+      
+      const shortDiv = document.createElement('a');
+      shortDiv.href = editMode ? 'javascript:void(0)' : item.url;
+      //shortDiv.target = '_blank';
+      shortDiv.className = 'shortcut';
+      shortDiv.style.setProperty('--shortcut-background', `url('${item.image}')`);
+      shortDiv.setAttribute('title', item.title);
+      shortDiv.setAttribute('draggable', 'true');
+      shortDiv.setAttribute('data-index', index);
+
+      // Add drag and drop event listeners
+      shortDiv.addEventListener('dragstart', handleDragStart);
+      shortDiv.addEventListener('dragend', handleDragEnd);
+      shortDiv.addEventListener('dragover', handleDragOver);
+      shortDiv.addEventListener('dragenter', handleDragEnter);
+      shortDiv.addEventListener('dragleave', handleDragLeave);
+      shortDiv.addEventListener('drop', handleDrop);
+
+      if (editMode) {
+        shortDiv.innerHTML = `
+          <button class="delete-shortcut" onclick="deleteShortcut(this)">×</button>
+          <button class="edit-shortcut" onclick="editShortcut(this)">✎</button>
+          <img src="${item.image}" class="shortcutimg" alt="${item.title}" />
+          <div class="title">${item.title}</div>
+        `;
+      } else {
+        shortDiv.innerHTML = `
+          <img src="${item.image}" class="shortcutimg" alt="${item.title}" />
+          <div class="title">${item.title}</div>
+        `;
+      }
+      row.appendChild(shortDiv);
+    });
+
+    // Check if there are hidden shortcuts
+    const hiddenShortcuts = links.filter(item => item.hidden);
+    if (hiddenShortcuts.length > 0) {
+      // Create hidden shortcuts container for inline expansion
+      const hiddenContainer = document.createElement('div');
+      hiddenContainer.className = 'hidden-shortcuts-container';
+      
+      hiddenShortcuts.forEach((item, index) => {
+        const hiddenShortcut = document.createElement('a');
+        hiddenShortcut.href = item.url;
+        hiddenShortcut.target = '_blank';
+        hiddenShortcut.className = 'hidden-shortcut';
+        hiddenShortcut.style.setProperty('--shortcut-background', `url("${item.image}")`);
+        
+        hiddenShortcut.innerHTML = `
+          <img src="${item.image}" alt="${item.title}" class="shortcutimg" />
+          <div class="title">${item.title}</div>
+        `;
+        hiddenContainer.appendChild(hiddenShortcut);
+      });
+      
+      // Create chevron button
+      const chevronButton = document.createElement('div');
+      chevronButton.className = 'chevron-button';
+      chevronButton.innerHTML = '<span class="chevron-icon"></span>';
+      chevronButton.setAttribute('role', 'button');
+      chevronButton.setAttribute('tabindex', '0');
+      chevronButton.setAttribute('aria-expanded', 'false');
+      chevronButton.setAttribute('aria-label', 'Show hidden shortcuts');
+      
+      chevronButton.addEventListener('click', () => {
+        const isExpanded = chevronButton.classList.toggle('expanded');
+        hiddenContainer.classList.toggle('expanded');
+        chevronButton.setAttribute('aria-expanded', isExpanded);
+      });
+
+      // Add hidden container and chevron to row
+      row.appendChild(hiddenContainer);
+      row.appendChild(chevronButton);
+    }
+
+    if (editMode) {
+      const addButton = document.createElement('div');
+      addButton.className = 'add-shortcut';
+      addButton.innerHTML = '+';
+      addButton.onclick = () => addShortcut(sectionName);
+      row.appendChild(addButton);
+    }
+
+    sectionWrapper.appendChild(row);
+    container.appendChild(sectionWrapper);
+  });
+}
+
+// Add these functions after the loadLinks function
+let draggedElement = null;
+
+function handleDragStart(e) {
+  if (!editMode) return;
+  
+  draggedElement = this;
+  this.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', this.getAttribute('data-index'));
+}
+
+function handleDragEnd(e) {
+  if (!editMode) return;
+  
+  this.classList.remove('dragging');
+  const sections = document.querySelectorAll('.section-row');
+  sections.forEach(section => {
+    section.classList.remove('drag-active');
+  });
+}
+
+function handleDragOver(e) {
+  if (!editMode) return;
+  
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+}
+
+function handleDragEnter(e) {
+  if (!editMode) return;
+  
+  e.preventDefault();
+  this.classList.add('drag-over');
+  this.closest('.section-row').classList.add('drag-active');
+}
+
+function handleDragLeave(e) {
+  if (!editMode) return;
+  
+  this.classList.remove('drag-over');
+}
+
+function handleDrop(e) {
+  if (!editMode) return;
+  
+  e.preventDefault();
+  this.classList.remove('drag-over');
+  
+  const sourceIndex = parseInt(e.dataTransfer.getData('text/plain'));
+  const targetIndex = parseInt(this.getAttribute('data-index'));
+  
+  if (sourceIndex === targetIndex) return;
+  
+  const sourceSection = draggedElement.closest('.section-row').getAttribute('data-section');
+  const targetSection = this.closest('.section-row').getAttribute('data-section');
+  
+  reorderShortcuts(sourceSection, targetSection, sourceIndex, targetIndex);
+}
+
+async function reorderShortcuts(sourceSection, targetSection, sourceIndex, targetIndex) {
+  try {
+    const response = await fetch('links2.json');
+    if (!response.ok) throw new Error('Failed to fetch');
+    const data = await response.json();
+    
+    // Get the shortcut to move
+    const shortcut = data[sourceSection][sourceIndex];
+    
+    // Remove from source
+    data[sourceSection].splice(sourceIndex, 1);
+    
+    // Add to target
+    if (sourceSection === targetSection) {
+      data[targetSection].splice(targetIndex, 0, shortcut);
+    } else {
+      data[targetSection].splice(targetIndex, 0, shortcut);
+    }
+    
+    // Save the updated data (this will likely fail in file:// mode)
+    try {
+      await fetch('links2.json', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data, null, 2)
+      });
+    } catch (saveError) {
+      console.warn('Could not save changes to links2.json (expected in file:// mode):', saveError);
+    }
+    
+    // Refresh the UI
+    refreshUI();
+  } catch (error) {
+    console.error('Error updating shortcuts:', error);
+    alert('Could not reorder shortcuts. This feature requires a web server.');
+  }
+}
+
+    function deleteShortcut(button) {
+      const shortcut = button.parentElement;
+      const row = shortcut.parentElement;
+      shortcut.remove();
+      saveChanges();
+    }
+
+    function editShortcut(button) {
+    currentEditingShortcut = button.parentElement;
+    const modal = document.getElementById('editModal');
+    const titleInput = document.getElementById('editTitle');
+    const urlInput = document.getElementById('editUrl');
+    const imageInput = document.getElementById('editImage');
+    const hiddenInput = document.getElementById('editHidden');
+
+    titleInput.value = currentEditingShortcut.querySelector('.title').textContent;
+    urlInput.value = currentEditingShortcut.href;
+    imageInput.value = currentEditingShortcut.querySelector('.shortcutimg').src;
+    
+    // Check if this shortcut is marked as hidden in the data
+    const sectionName = currentEditingShortcut.closest('.section-row').getAttribute('data-section');
+    const shortcutIndex = parseInt(currentEditingShortcut.getAttribute('data-index'));
+    
+    // We'll need to fetch the current data to check hidden status
+    fetch('links2.json')
+        .then(response => {
+            if (!response.ok) throw new Error('Failed to fetch');
+            return response.json();
+        })
+        .then(data => {
+            hiddenInput.checked = data[sectionName][shortcutIndex]?.hidden || false;
+        })
+        .catch(error => {
+            console.warn('Could not fetch links data for edit modal:', error);
+            hiddenInput.checked = false;
+        });
+
+    modal.style.display = 'flex';
+}
+
+    function closeModal() {
+      document.getElementById('editModal').style.display = 'none';
+    }
+
+    function saveShortcut() {
+      if (currentEditingShortcut) {
+        const title = document.getElementById('editTitle').value;
+        const url = document.getElementById('editUrl').value;
+        const image = document.getElementById('editImage').value;
+        const hidden = document.getElementById('editHidden').checked;
+
+        currentEditingShortcut.href = url;
+        currentEditingShortcut.querySelector('.title').textContent = title;
+        currentEditingShortcut.querySelector('.shortcutimg').src = image;
+        currentEditingShortcut.style.setProperty('--shortcut-background', `url('${image}')`);
+        
+        // Store hidden property as data attribute for now
+        currentEditingShortcut.setAttribute('data-hidden', hidden);
+      }
+
+      closeModal();
+      saveChanges();
+    }
+
+    function addShortcut(sectionName) {
+      currentEditingShortcut = null;
+      document.getElementById('editTitle').value = '';
+      document.getElementById('editUrl').value = '';
+      document.getElementById('editImage').value = '';
+      document.getElementById('editModal').style.display = 'flex';
+    }
+
+    function saveChanges() {
+      // Implement the logic to save changes to links2.json
+      const newData = {};
+      const sections = document.getElementById('container').children;
+      
+      for (let i = 0; i < sections.length; i++) {
+        const section = sections[i];
+        const sectionTitle = section.querySelector('.section-title').textContent;
+        const shortcuts = section.querySelectorAll('.shortcut');
+        newData[sectionTitle] = Array.from(shortcuts).map(s => ({
+          title: s.querySelector('.title').textContent,
+          url: s.href,
+          image: s.querySelector('.shortcutimg').src,
+          hidden: s.getAttribute('data-hidden') === 'true'
+        }));
+      }
+
+      // You'll need to implement server-side saving here
+      console.log('Save this data to links2.json:', newData);
+    }
+
+    function toggleMode() {
+    const body = document.body;
+    const toggleButton = document.querySelector('.toggle');
+    body.classList.toggle('dark-mode');
+
+    // Update display settings based on theme
+    const brightnessSlider = document.getElementById('brightnessSlider');
+    const contrastSlider = document.getElementById('contrastSlider');
+    const overlay = document.querySelector('.background-overlay');
+
+    if (body.classList.contains('dark-mode')) {
+        // Dark mode settings
+        brightnessSlider.value = 40; // 0.4 * 100
+        contrastSlider.value = 100; // 1.0 * 100
+        overlay.style.filter = `blur(${document.getElementById('blurSlider').value}px) brightness(0.8) contrast(1)`;
+    } else {
+        // Light mode settings
+        brightnessSlider.value = 80; // 0.8 * 100
+        contrastSlider.value = 100; // 1.0 * 100
+        overlay.style.filter = `blur(${document.getElementById('blurSlider').value}px) brightness(0.4) contrast(1)`;
+    }
+
+    // Update display values
+    document.getElementById('brightnessValue').textContent = (brightnessSlider.value / 100).toFixed(2);
+    document.getElementById('contrastValue').textContent = (contrastSlider.value / 100).toFixed(2);
+
+    // Update other elements
+    const shortcutImages = document.querySelectorAll('.shortcutimg');
+    shortcutImages.forEach(img => {
+        img.classList.toggle('dark-mode');
+    });
+
+    const shortcuts = document.querySelectorAll('.shortcut, .hidden-shortcut');
+    shortcuts.forEach(shortcut => {
+        shortcut.classList.toggle('dark-mode');
+    });
+
+    const backgroundimg = document.querySelectorAll('.background-overlay');
+    backgroundimg.forEach(backgroundimg => {
+        backgroundimg.classList.toggle('dark-mode');
+    });
+
+    const toggle = document.querySelectorAll('.toggle');
+    toggle.forEach(toggleicon => {
+        toggleicon.classList.toggle('dark-mode');
+    });
+
+    const sectionTitles = document.querySelectorAll('.section-title');
+    sectionTitles.forEach(title => {
+        title.classList.toggle('dark-mode');
+    });
+
+    // Save settings if persistence is enabled
+    if (localStorage.getItem('persistSettings') === 'true') {
+        saveConfig();
+    }
+}
+
+    loadLinks();
+
+    // Add the shortcut size control handlers
+    const shortcutSizeSlider = document.getElementById('shortcutSizeSlider');
+    const gapSizeSlider = document.getElementById('gapSizeSlider');
+    const maxColumnsSelect = document.getElementById('maxColumnsSelect');
+
+    function updateShortcutStyles() {
+        const shortcutSize = shortcutSizeSlider.value;
+        const gapSize = gapSizeSlider.value;
+        const maxColumns = maxColumnsSelect.value;
+
+        document.getElementById('shortcutSizeValue').textContent = shortcutSize;
+        document.getElementById('gapSizeValue').textContent = gapSize;
+
+        // Update CSS custom properties
+        document.documentElement.style.setProperty('--shortcut-size', `${shortcutSize}px`);
+        document.documentElement.style.setProperty('--gap-size', `${gapSize}px`);
+
+        const style = document.createElement('style');
+        style.textContent = `
+            .shortcut {
+                width: ${shortcutSize}px !important;
+                height: ${shortcutSize}px !important;
+            }
+            .section-row {
+                gap: ${gapSize}px ${gapSize}px !important;
+                ${maxColumns === 'unlimited' 
+                    ? `display: flex !important; flex-flow: row wrap !important;` 
+                    : `display: grid !important; grid-template-columns: repeat(${maxColumns}, ${shortcutSize}px) !important;`
+                }
+            }
+        `;
+
+        // Remove any previous dynamic styles
+        const existingStyle = document.getElementById('dynamic-shortcut-styles');
+        if (existingStyle) {
+            existingStyle.remove();
+        }
+        style.id = 'dynamic-shortcut-styles';
+        document.head.appendChild(style);
+
+        if (localStorage.getItem('persistSettings') === 'true') {
+            saveConfig();
+        }
+    }
+
+    shortcutSizeSlider.addEventListener('input', updateShortcutStyles);
+    gapSizeSlider.addEventListener('input', updateShortcutStyles);
+    maxColumnsSelect.addEventListener('change', updateShortcutStyles);
+
+    function saveConfig() {
+        const config = {
+            darkMode: document.body.classList.contains('dark-mode'),
+            backgroundImage: document.querySelector('.background-overlay').style.backgroundImage,
+            timestamp: new Date().toISOString(),
+            linksData: null,
+            shortcutSize: shortcutSizeSlider.value,
+            gapSize: gapSizeSlider.value,
+            maxColumns: maxColumnsSelect.value,
+            autoFitEnabled: document.getElementById('autoFitEnabled').checked,
+            shadowSize: document.getElementById('shadowSlider').value,
+        };
+        
+        // Save the links data
+        fetch('links2.json')
+            .then(response => response.json())
+            .then(data => {
+                config.linksData = data;
+                localStorage.setItem('siteConfig', JSON.stringify(config));
+            });
+    }
+
+    async function loadConfig() {
+        const savedConfig = localStorage.getItem('siteConfig');
+        if (savedConfig) {
+            const config = JSON.parse(savedConfig);
+            
+            // Apply dark mode
+            if (config.darkMode !== document.body.classList.contains('dark-mode')) {
+                toggleMode();
+            }
+            
+            // Apply background image if different
+            if (config.backgroundImage) {
+                document.querySelector('.background-overlay').style.backgroundImage = config.backgroundImage;
+            }
+            
+            // Load links data
+            if (config.linksData) {
+                const container = document.getElementById('container');
+                container.innerHTML = ''; // Clear existing content
+                Object.entries(config.linksData).forEach(([sectionName, links]) => {
+                    // Create a section wrapper
+                    const sectionWrapper = document.createElement('div');
+                    sectionWrapper.className = 'section-wrapper';
+                    sectionWrapper.style.cssText = 'display: flex; flex-direction: column; min-width: 300px; flex: 0 1 auto;';
+
+                    const sectionTitle = document.createElement('h2');
+                    sectionTitle.className = 'section-title';
+                    sectionTitle.textContent = sectionName;
+                    sectionWrapper.appendChild(sectionTitle);
+        
+                    const row = document.createElement('div');
+                    row.className = 'section-row';
+        
+                    links.forEach(item => {
+                        // Skip hidden shortcuts for main display
+                        if (item.hidden) return;
+                        
+                        const shortDiv = document.createElement('a');
+                        shortDiv.href = item.url;
+                        shortDiv.target = '_blank';
+                        shortDiv.className = 'shortcut';
+                        shortDiv.style.setProperty('--shortcut-background', `url('${item.image}')`);
+                        shortDiv.setAttribute('title', item.title);
+        
+                        shortDiv.innerHTML = `
+                            <img src="${item.image}" class="shortcutimg" alt="${item.title}" />
+                            <div class="title">${item.title}</div>
+                        `;
+                        row.appendChild(shortDiv);
+                    });
+                    
+                    // Handle hidden shortcuts
+                    const hiddenShortcuts = links.filter(item => item.hidden);
+                    if (hiddenShortcuts.length > 0) {
+                        // Create hidden shortcuts container for inline expansion
+                        const hiddenContainer = document.createElement('div');
+                        hiddenContainer.className = 'hidden-shortcuts-container';
+                        
+                        hiddenShortcuts.forEach(item => {
+                            const hiddenShortcut = document.createElement('a');
+                            hiddenShortcut.href = item.url;
+                            hiddenShortcut.target = '_blank';
+                            hiddenShortcut.className = 'hidden-shortcut';
+                            hiddenShortcut.style.setProperty('--shortcut-background', `url("${item.image}")`);
+                            
+                            hiddenShortcut.innerHTML = `
+                                <img src="${item.image}" alt="${item.title}" class="shortcutimg" />
+                                <div class="title">${item.title}</div>
+                            `;
+                            hiddenContainer.appendChild(hiddenShortcut);
+                        });
+                        
+                        // Create chevron button
+                        const chevronButton = document.createElement('div');
+                        chevronButton.className = 'chevron-button';
+                        chevronButton.innerHTML = '<span class="chevron-icon"></span>';
+                        chevronButton.setAttribute('role', 'button');
+                        chevronButton.setAttribute('tabindex', '0');
+                        chevronButton.setAttribute('aria-expanded', 'false');
+                        chevronButton.setAttribute('aria-label', 'Show hidden shortcuts');
+                        
+                        chevronButton.addEventListener('click', () => {
+                            const isExpanded = chevronButton.classList.toggle('expanded');
+                            hiddenContainer.classList.toggle('expanded');
+                            chevronButton.setAttribute('aria-expanded', isExpanded);
+                        });
+                        
+                        // Add hidden container and chevron to row
+                        row.appendChild(hiddenContainer);
+                        row.appendChild(chevronButton);
+                    }
+                    sectionWrapper.appendChild(row);
+                    container.appendChild(sectionWrapper);
+                });
+            }
+
+            // Apply shortcut size settings
+            if (config.shortcutSize) shortcutSizeSlider.value = config.shortcutSize;
+            if (config.gapSize) gapSizeSlider.value = config.gapSize;
+            if (config.maxColumns) maxColumnsSelect.value = config.maxColumns;
+            if (config.autoFitEnabled !== undefined) {
+                document.getElementById('autoFitEnabled').checked = config.autoFitEnabled;
+            }
+            if (config.shadowSize) {
+                document.getElementById('shadowSlider').value = config.shadowSize;
+                document.documentElement.style.setProperty('--shadow-size', `${config.shadowSize}px`);
+            }
+            updateShortcutStyles();
+        }
+    }
+    
+    function exportConfig() {
+        fetch('links2.json')
+            .then(response => response.json())
+            .then(data => {
+                const config = {
+                    darkMode: document.body.classList.contains('dark-mode'),
+                    backgroundImage: document.querySelector('.background-overlay').style.backgroundImage,
+                    timestamp: new Date().toISOString(),
+                    linksData: data,
+                    shortcutSize: shortcutSizeSlider.value,
+                    gapSize: gapSizeSlider.value,
+                    maxColumns: maxColumnsSelect.value
+                };
+                
+                const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'site-config.json';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            });
+    }
+    
+    function importConfig() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.json';
+        input.onchange = (e) => {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            reader.onload = async (event) => {
+                try {
+                    const config = JSON.parse(event.target.result);
+                    if (config.darkMode !== document.body.classList.contains('dark-mode')) {
+                        toggleMode();
+                    }
+                    if (config.linksData) {
+                        const container = document.getElementById('container');
+                        container.innerHTML = '';
+                        await loadLinks(config.linksData);
+                    }
+                    if (config.shortcutSize) shortcutSizeSlider.value = config.shortcutSize;
+                    if (config.gapSize) gapSizeSlider.value = config.gapSize;
+                    if (config.maxColumns) maxColumnsSelect.value = config.maxColumns;
+                    updateShortcutStyles();
+                    saveConfig();
+                } catch (err) {
+                    alert('Invalid configuration file');
+                }
+            };
+            reader.readAsText(file);
+        };
+        input.click();
+    }
+
+    function toggleMenu() {
+        const burgerButton = document.querySelector('.burger-button');
+        const menuContent = document.querySelector('.menu-content');
+        burgerButton.classList.toggle('active');
+        menuContent.classList.toggle('active');
+    }
+
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+        const burgerMenu = document.querySelector('.burger-menu');
+        const burgerButton = document.querySelector('.burger-button');
+        const menuContent = document.querySelector('.menu-content');
+        
+        if (!burgerMenu.contains(e.target) && menuContent.classList.contains('active')) {
+            burgerButton.classList.remove('active');
+            menuContent.classList.remove('active');
+        }
+    });
+
+    function toggleHiddenShortcuts(chevronButton) {
+    const sectionRow = chevronButton.closest('.section-row');
+    const hiddenContainer = sectionRow.querySelector('.hidden-shortcuts-container');
+    const chevronIcon = chevronButton.querySelector('.chevron-icon');
+    
+    if (hiddenContainer) {
+        const isExpanded = hiddenContainer.classList.contains('expanded');
+        
+        if (isExpanded) {
+            // Collapse
+            hiddenContainer.classList.remove('expanded');
+            chevronButton.classList.remove('expanded');
+            chevronButton.setAttribute('aria-expanded', 'false');
+            chevronButton.setAttribute('aria-label', 'Show hidden shortcuts');
+        } else {
+            // Expand - calculate optimal max-width
+            const hiddenShortcuts = hiddenContainer.querySelectorAll('.hidden-shortcut');
+            const shortcutSize = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--shortcut-size'));
+            const gapSize = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--gap-size'));
+            const optimalWidth = (hiddenShortcuts.length * shortcutSize) + ((hiddenShortcuts.length - 1) * gapSize);
+            
+            hiddenContainer.style.maxWidth = `${optimalWidth}px`;
+            hiddenContainer.classList.add('expanded');
+            chevronButton.classList.add('expanded');
+            chevronButton.setAttribute('aria-expanded', 'true');
+            chevronButton.setAttribute('aria-label', 'Hide hidden shortcuts');
+        }
+    }
+}
+
+// Add keyboard support for chevron buttons
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+        const chevronButton = e.target.closest('.chevron-button');
+        if (chevronButton) {
+            e.preventDefault();
+            toggleHiddenShortcuts(chevronButton);
+        }
+    }
+});
+
+    function requestStoragePermission(event) {
+        event.preventDefault();
+        if (confirm("Would you like your browser to save your settings permanently?")) {
+            localStorage.setItem('persistSettings', 'true');
+            saveConfig();
+            alert('Your settings will now be saved automatically!');
+        } else {
+            localStorage.removeItem('persistSettings');
+            localStorage.removeItem('siteConfig');
+            alert('Settings will not be saved between sessions.');
+        }
+    }
+
+    if (localStorage.getItem('persistSettings') === 'true') {
+        saveConfig();
+    }
+
+    function setBackgroundFromUrl() {
+        const url = document.getElementById('bgUrlInput').value;
+        if (url) {
+            document.querySelector('.background-overlay').style.backgroundImage = `url("${url}")`;
+            if (localStorage.getItem('persistSettings') === 'true') {
+                saveConfig();
+            }
+        }
+    }
+
+    // Handle file uploads
+    document.getElementById('bgFileInput').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.querySelector('.background-overlay').style.backgroundImage = `url("${e.target.result}")`;
+                if (localStorage.getItem('persistSettings') === 'true') {
+                    saveConfig();
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    function toggleDisplaySettings() {
+        const settings = document.getElementById('displaySettings');
+        settings.style.display = settings.style.display === 'none' ? 'block' : 'none';
+    }
+
+    // Initialize sliders
+    const updateBackgroundFilter = () => {
+        const blur = document.getElementById('blurSlider').value;
+        const brightness = document.getElementById('brightnessSlider').value / 100;
+        const contrast = document.getElementById('contrastSlider').value / 100;
+        
+        document.getElementById('blurValue').textContent = blur;
+        document.getElementById('brightnessValue').textContent = brightness.toFixed(2);
+        document.getElementById('contrastValue').textContent = contrast.toFixed(2);
+        
+        const overlay = document.querySelector('.background-overlay');
+        overlay.style.filter = `blur(${blur}px) brightness(${brightness}) contrast(${contrast})`;
+    };
+
+    const updateShadow = () => {
+        const shadow = document.getElementById('shadowSlider').value;
+        document.getElementById('shadowValue').textContent = shadow;
+        document.documentElement.style.setProperty('--shadow-size', `${shadow}px`);
+        
+        if (localStorage.getItem('persistSettings') === 'true') {
+            saveConfig();
+        }
+    };
+
+    // Update the event listeners
+    ['blurSlider', 'brightnessSlider', 'contrastSlider'].forEach(id => {
+        document.getElementById(id).addEventListener('input', updateBackgroundFilter);
+    });
+
+    document.getElementById('shadowSlider').addEventListener('input', updateShadow);
+
+    function autoAdjustGap() {
+    // Get viewport width
+    const viewportWidth = window.innerWidth - 60; // Subtract 60px for margins
+    
+    // Get shortcut size and max columns setting
+    const shortcutSize = parseInt(document.getElementById('shortcutSizeSlider').value);
+    const maxColumns = document.getElementById('maxColumnsSelect').value;
+    
+    // Find section with most shortcuts
+    const sections = document.querySelectorAll('.section-row');
+    let maxShortcuts = 0;
+    
+    sections.forEach(section => {
+        const shortcutCount = section.querySelectorAll('.shortcut').length;
+        maxShortcuts = Math.max(maxShortcuts, shortcutCount);
+    });
+    
+    // Calculate optimal gap size based on max columns setting
+    const totalWidth = viewportWidth;
+    const possibleColumns = Math.floor(totalWidth / shortcutSize);
+    
+    // Determine number of columns to use
+    let neededColumns;
+    if (maxColumns === 'unlimited') {
+        neededColumns = Math.min(possibleColumns, maxShortcuts);
+    } else {
+        neededColumns = Math.min(possibleColumns, maxShortcuts, parseInt(maxColumns));
+    }
+    
+    const totalGapSpace = totalWidth - (neededColumns * shortcutSize);
+    const gaps = neededColumns - 1;
+    let optimalGap = gaps > 0 ? Math.floor(totalGapSpace / gaps) : 0;
+    
+    // Ensure gap size is within slider limits
+    optimalGap = Math.max(0, Math.min(120, optimalGap));
+    
+    // Update gap size slider and apply changes
+    const gapSizeSlider = document.getElementById('gapSizeSlider');
+    gapSizeSlider.value = optimalGap;
+    document.getElementById('gapSizeValue').textContent = optimalGap;
+    
+    // Update styles
+    updateShortcutStyles();
+}
+
+// Debounce function to limit how often the resize handler fires
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// Add window resize listener with debouncing
+window.addEventListener('resize', debounce(() => {
+    const maxColumns = document.getElementById('maxColumnsSelect').value;
+    const autoFitEnabled = document.getElementById('autoFitEnabled').checked;
+    
+    if (maxColumns !== '1' && autoFitEnabled) {
+        autoAdjustShortcutSize();
+    }
+}, 250)); // Wait 250ms after resize ends before executing
+
+// Add checkbox event listener after other initialization code
+document.getElementById('autoFitEnabled').addEventListener('change', function(e) {
+    if (e.target.checked) {
+        autoAdjustShortcutSize();
+    }
+    if (localStorage.getItem('persistSettings') === 'true') {
+        saveConfig();
+    }
+});
+
+function autoAdjustShortcutSize() {
+    const viewportWidth = window.innerWidth;
+    const shortcutSizeSlider = document.getElementById('shortcutSizeSlider');
+    const gapSizeSlider = document.getElementById('gapSizeSlider');
+    
+    // Shortcut size scaling
+    // - Base size: 64px at 400px viewport
+    // - Increases by 8px every 50px of viewport width
+    // - Clamp between 64px and 184px
+    const baseShortcutSize = 64;
+    const shortcutGrowthRate = 4 / 50; // 8px increase per 50px of width
+    const shortcutSize = Math.round(baseShortcutSize + (viewportWidth - 400) * shortcutGrowthRate);
+    const newShortcutSize = Math.max(64, Math.min(184, shortcutSize));
+
+    // Gap size scaling
+    // - Base size: 5px at 400px viewport
+    // - Increases by 2px every 50px of viewport width
+    // - Clamp between 5px and 40px
+    const baseGapSize = 5;
+    const gapGrowthRate = 2 / 50; // 2px increase per 50px of width
+    const gapSize = Math.round(baseGapSize + (viewportWidth - 400) * gapGrowthRate);
+    const newGapSize = Math.max(5, Math.min(40, gapSize));
+
+    // Update shortcut size slider and value
+    shortcutSizeSlider.value = newShortcutSize;
+    document.getElementById('shortcutSizeValue').textContent = newShortcutSize;
+    
+    // Update gap size slider and value
+    gapSizeSlider.value = newGapSize;
+    document.getElementById('gapSizeValue').textContent = newGapSize;
+    
+    // Update styles
+    updateShortcutStyles();
+}
+
+// Replace the existing resize listener
+window.addEventListener('resize', debounce(() => {
+    const maxColumns = document.getElementById('maxColumnsSelect').value;
+    const autoFitEnabled = document.getElementById('autoFitEnabled').checked;
+    
+    if (maxColumns !== '1' && autoFitEnabled) {
+        autoAdjustShortcutSize();
+    }
+}, 250));
+
+// Update the checkbox event listener to respect auto-fit setting
+document.getElementById('autoFitEnabled').addEventListener('change', function(e) {
+    if (e.target.checked) {
+        autoAdjustShortcutSize();
+    }
+    if (localStorage.getItem('persistSettings') === 'true') {
+        saveConfig();
+    }
+});
+
+  </script>
+</body>
+</html>
