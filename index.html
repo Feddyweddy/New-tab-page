@@ -798,7 +798,7 @@ body.dark-mode .hidden-shortcut .shortcutimg {
     console.log('Successfully loaded links.json with', Object.keys(data).length, 'sections');
   } catch (error) {
     console.error('Could not load links.json, using sample data:', error);
-    alert('Could not load your shortcuts from links2.json. Using sample data instead. Make sure you\'re accessing the page through a web server (e.g., http://localhost:8000)');
+    alert('Could not load your shortcuts from links.json. Using sample data instead. Make sure you\'re accessing the page through a web server (e.g., http://localhost:8000)');
     // Fallback sample data when file can't be loaded (e.g., CORS issues)
     data = {
       "Watch": [
@@ -1037,7 +1037,7 @@ function handleDrop(e) {
 
 async function reorderShortcuts(sourceSection, targetSection, sourceIndex, targetIndex) {
   try {
-    const response = await fetch('links2.json');
+    const response = await fetch('links.json');
     if (!response.ok) throw new Error('Failed to fetch');
     const data = await response.json();
     
@@ -1056,7 +1056,7 @@ async function reorderShortcuts(sourceSection, targetSection, sourceIndex, targe
     
     // Save the updated data (this will likely fail in file:// mode)
     try {
-      await fetch('links2.json', {
+      await fetch('links.json', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -1064,7 +1064,7 @@ async function reorderShortcuts(sourceSection, targetSection, sourceIndex, targe
         body: JSON.stringify(data, null, 2)
       });
     } catch (saveError) {
-      console.warn('Could not save changes to links2.json (expected in file:// mode):', saveError);
+      console.warn('Could not save changes to links.json (expected in file:// mode):', saveError);
     }
     
     // Refresh the UI
@@ -1099,7 +1099,7 @@ async function reorderShortcuts(sourceSection, targetSection, sourceIndex, targe
     const shortcutIndex = parseInt(currentEditingShortcut.getAttribute('data-index'));
     
     // We'll need to fetch the current data to check hidden status
-    fetch('links2.json')
+    fetch('links.json')
         .then(response => {
             if (!response.ok) throw new Error('Failed to fetch');
             return response.json();
@@ -1148,7 +1148,7 @@ async function reorderShortcuts(sourceSection, targetSection, sourceIndex, targe
     }
 
     function saveChanges() {
-      // Implement the logic to save changes to links2.json
+      // Implement the logic to save changes to links.json
       const newData = {};
       const sections = document.getElementById('container').children;
       
@@ -1165,7 +1165,7 @@ async function reorderShortcuts(sourceSection, targetSection, sourceIndex, targe
       }
 
       // You'll need to implement server-side saving here
-      console.log('Save this data to links2.json:', newData);
+      console.log('Save this data to links.json:', newData);
     }
 
     function toggleMode() {
@@ -1291,7 +1291,7 @@ async function reorderShortcuts(sourceSection, targetSection, sourceIndex, targe
         };
         
         // Save the links data
-        fetch('links2.json')
+        fetch('links.json')
             .then(response => response.json())
             .then(data => {
                 config.linksData = data;
@@ -1411,7 +1411,7 @@ async function reorderShortcuts(sourceSection, targetSection, sourceIndex, targe
     }
     
     function exportConfig() {
-        fetch('links2.json')
+        fetch('links.json')
             .then(response => response.json())
             .then(data => {
                 const config = {
