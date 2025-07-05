@@ -2,6 +2,26 @@
 
 This project is a single HTML file (`index.html`) that creates a highly customizable, visually appealing dashboard for your links. It reads link data from a `links.json` file and displays them in categorized rows.
 
+## Running Locally
+
+To run this project locally, you'll need to serve it through a web server due to CORS restrictions when loading the `links.json` file.
+
+### Quick Start (Windows)
+1. Ensure Python is installed on your system
+2. Double-click `run.bat` to start a local server
+3. The dashboard will open automatically at `http://localhost:8000`
+
+### Manual Setup
+1. Open a terminal/command prompt in the project directory
+2. Run: `python -m http.server 8000`
+3. Open your browser and navigate to `http://localhost:8000`
+
+### Alternative Servers
+You can use any web server of your choice:
+- Node.js: `npx serve .`
+- PHP: `php -S localhost:8000`
+- Live Server (VS Code extension)
+
 ## Features
 
 *   **Link Organization**: Group your links into sections (e.g., "Watch", "Work", "Social").
@@ -11,9 +31,9 @@ This project is a single HTML file (`index.html`) that creates a highly customiz
 *   **Drag & Drop**: Easily reorder your shortcuts (requires a local web server).
 *   **Configuration**: Export and import your entire setup, including styling and links.
 
-## `links2.json` Format
+## `links.json` Format
 
-The `links2.json` file contains the data for all the shortcuts. It's a JSON object where each key is a section title, and the value is an array of link objects.
+The `links.json` file contains the data for all the shortcuts. It's a JSON object where each key is a section title, and the value is an array of link objects.
 
 Each link object has the following structure:
 
