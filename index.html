@@ -775,6 +775,9 @@ body.dark-mode .hidden-shortcut .shortcutimg {
   <div id="container"></div>
 
   <script>
+    // Configuration
+    const LINKS_FILENAME = 'links.json'; // Change this to use a different links file (e.g., 'links-work.json', 'links-gaming.json')
+    
     let editMode = false;
     let currentEditingShortcut = null;
 
@@ -793,15 +796,15 @@ body.dark-mode .hidden-shortcut .shortcutimg {
     async function loadLinks() {
   let data;
   try {
-    console.log('Attempting to load links.json...');
-    const response = await fetch('links.json');
+    console.log(`Attempting to load ${LINKS_FILENAME}...`);
+    const response = await fetch(LINKS_FILENAME);
     console.log('Response status:', response.status, response.statusText);
     if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     data = await response.json();
-    console.log('Successfully loaded links.json with', Object.keys(data).length, 'sections');
+    console.log(`Successfully loaded ${LINKS_FILENAME} with`, Object.keys(data).length, 'sections');
   } catch (error) {
-    console.error('Could not load links.json, using sample data:', error);
-    alert('Could not load your shortcuts from links.json. Using sample data instead. Make sure you\'re accessing the page through a web server (e.g., http://localhost:8000)');
+    console.error(`Could not load ${LINKS_FILENAME}, using sample data:`, error);
+    alert(`Could not load your shortcuts from ${LINKS_FILENAME}. Using sample data instead. Make sure you're accessing the page through a web server (e.g., http://localhost:8000)`);
     // Fallback sample data when file can't be loaded (e.g., CORS issues)
     data = {
       "Watch": [
@@ -1040,7 +1043,7 @@ function handleDrop(e) {
 
 async function reorderShortcuts(sourceSection, targetSection, sourceIndex, targetIndex) {
   try {
-    const response = await fetch('links.json');
+    const response = await fetch(LINKS_FILENAME);
     if (!response.ok) throw new Error('Failed to fetch');
     const data = await response.json();
     
@@ -1059,7 +1062,7 @@ async function reorderShortcuts(sourceSection, targetSection, sourceIndex, targe
     
     // Save the updated data (this will likely fail in file:// mode)
     try {
-      await fetch('links.json', {
+      await fetch(LINKS_FILENAME, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -1067,7 +1070,7 @@ async function reorderShortcuts(sourceSection, targetSection, sourceIndex, targe
         body: JSON.stringify(data, null, 2)
       });
     } catch (saveError) {
-      console.warn('Could not save changes to links.json (expected in file:// mode):', saveError);
+      console.warn(`Could not save changes to ${LINKS_FILENAME} (expected in file:// mode):`, saveError);
     }
     
     // Refresh the UI
@@ -1102,7 +1105,7 @@ async function reorderShortcuts(sourceSection, targetSection, sourceIndex, targe
     const shortcutIndex = parseInt(currentEditingShortcut.getAttribute('data-index'));
     
     // We'll need to fetch the current data to check hidden status
-    fetch('links.json')
+    fetch(LINKS_FILENAME)
         .then(response => {
             if (!response.ok) throw new Error('Failed to fetch');
             return response.json();
@@ -1168,7 +1171,7 @@ async function reorderShortcuts(sourceSection, targetSection, sourceIndex, targe
       }
 
       // You'll need to implement server-side saving here
-      console.log('Save this data to links.json:', newData);
+      console.log(`Save this data to ${LINKS_FILENAME}:`, newData);
     }
 
     function toggleMode() {
@@ -1294,7 +1297,7 @@ async function reorderShortcuts(sourceSection, targetSection, sourceIndex, targe
         };
         
         // Save the links data
-        fetch('links.json')
+        fetch(LINKS_FILENAME)
             .then(response => response.json())
             .then(data => {
                 config.linksData = data;
@@ -1414,7 +1417,7 @@ async function reorderShortcuts(sourceSection, targetSection, sourceIndex, targe
     }
     
     function exportConfig() {
-        fetch('links.json')
+        fetch(LINKS_FILENAME)
             .then(response => response.json())
             .then(data => {
                 const config = {
