@@ -2,6 +2,8 @@
 
 This project is a single HTML file (`index.html`) that creates a highly customizable, visually appealing dashboard for your links. It reads link data from a `links.json` file and displays them in categorized rows.
 
+[![Watch the video](https://i.imgur.com/B7Fudy8.jpeg)](https://i.imgur.com/m34OfWx.mp4)
+
 ## Running Locally
 
 To run this project locally, you'll need to serve it through a web server due to CORS restrictions when loading the `links.json` file.
