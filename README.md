@@ -28,6 +28,7 @@ You can use any web server of your choice:
 *   **Custom Styling**: Use the in-page menu to adjust shortcut size, spacing, background image, and more.
 *   **Dark/Light Mode**: Toggle between themes.
 *   **Collapsible Sections**: Hide less-used shortcuts behind a chevron to keep your dashboard tidy.
+*   **Global Show/Hide Toggle**: Use the "Show/Hide All" button in the burger menu to quickly toggle the visibility of all hidden shortcuts across all sections.
 *   **Multiple Link Files**: Switch between different link collections by changing the filename in the code.
 *   **Configuration**: Export and import your entire setup, including styling and links.
 
@@ -80,8 +81,8 @@ In this example:
 The dashboard can load different link files, making it easy to have separate collections (e.g., work links, personal links, gaming links). To switch between files:
 
 1. Open `index.html` in a text editor
-2. Find the line: `const LINKS_FILENAME = 'links.json';`
-3. Change `'links.json'` to your desired filename (e.g., `'links-work.json'`, `'links-gaming.json'`)
+2. Find the `LINKS_FILENAME` configuration variable at the very top of the file (around line 8-10)
+3. Change the value from `'links.json'` to your desired filename (e.g., `'links-work.json'`, `'links-gaming.json'`)
 4. Create the corresponding JSON file with your links
 
 This allows you to maintain multiple link collections while keeping private links separate from publicly shared ones.

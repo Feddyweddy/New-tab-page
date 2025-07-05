@@ -2,6 +2,12 @@
 <html>
 
 <head>
+  <script>
+    // ===== CONFIGURATION =====
+    // Change this to use a different links file (e.g., 'links-work.json', 'links-gaming.json')
+    const LINKS_FILENAME = 'links.json';
+    // =========================
+  </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.2/color-thief.umd.js"></script>
   <meta charset="utf-8" />
   <title>Links</title>
@@ -97,11 +103,16 @@
       flex-flow: row wrap;
       overflow-x: auto;
       margin: 10px 0 0 0;
-      padding: 10px;
+      padding: 5px 10px; /* Reduced vertical padding for normal mode */
       justify-content: flex-start;
       gap: var(--gap-size) var(--gap-size);
       background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.2) 80%, transparent 100%);
       border-radius: 30px;
+    }
+
+    .edit-mode .section-row {
+      padding: 10px; /* Full padding in edit mode */
+      padding-bottom: 40px; /* Extra space for edit/delete buttons */
     }
 
     .section-title,
@@ -149,16 +160,16 @@
       
     }
 
-    .shortcut:hover::before,
-    .shortcut:hover {
+    body:not(.edit-mode) .shortcut:hover::before,
+    body:not(.edit-mode) .shortcut:hover {
       scale: 1.1;
     }
 
-    .shortcut:hover .shortcutimg {
+    body:not(.edit-mode) .shortcut:hover .shortcutimg {
       filter: drop-shadow(0 0 calc(2px * 1.1) black) drop-shadow(0 0 calc(var(--shadow-size) * 1.1) white);
     }
 
-    .shortcut:hover .shortcutimg.dark-mode {
+    body:not(.edit-mode) .shortcut:hover .shortcutimg.dark-mode {
       filter: drop-shadow(0 0 calc(2px * 1.1) rgb(229, 229, 229)) 
               drop-shadow(0 0 calc(var(--shadow-size) * 1.1) black) 
               drop-shadow(0 0 calc(8px * 1.1) rgb(var(--dark-scfill)));
@@ -277,37 +288,96 @@ body.dark-mode .edit-button:hover {
 
 .delete-shortcut {
   display: none;
-  position: absolute;
-  top: 5px;
-  right: 5px;
+  position: relative;
+  margin-top: 5px;
+  margin-left: auto;
   z-index: 3;
-  background: red;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 24px;
+  width: 32px;
   height: 24px;
   cursor: pointer;
+  background: linear-gradient(135deg, #ff4757 0%, #ff3742 50%, #e55039 100%);
+  color: white;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 700;
+  box-shadow: 0 4px 16px rgba(255, 71, 87, 0.3), 
+              0 2px 6px rgba(0, 0, 0, 0.2),
+              inset 0 1px 2px rgba(255, 255, 255, 0.3),
+              inset 0 -1px 1px rgba(0, 0, 0, 0.1);
+  border: 1.5px solid rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(12px);
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform: translateZ(0) scale(0.95);
+  opacity: 0.92;
+}
+
+.delete-shortcut:hover {
+  background: linear-gradient(135deg, #ff3742 0%, #e55039 50%, #c44569 100%);
+  transform: translateZ(0) scale(1.08);
+  box-shadow: 0 8px 24px rgba(255, 71, 87, 0.5), 
+              0 4px 12px rgba(0, 0, 0, 0.3),
+              inset 0 1px 3px rgba(255, 255, 255, 0.4),
+              inset 0 -1px 2px rgba(0, 0, 0, 0.1);
+  border-color: rgba(255, 255, 255, 0.9);
+  opacity: 1;
+}
+
+.delete-shortcut:active {
+  transform: translateZ(0) scale(0.88);
+  box-shadow: 0 2px 8px rgba(255, 71, 87, 0.3);
+  transition: all 0.1s ease-out;
 }
 
 .edit-shortcut {
   display: none;
-  position: absolute;
-  top: 5px;
-  left: 5px;
+  position: relative;
+  margin-top: 5px;
+  margin-right: 10px;
   z-index: 3;
-  background: #007bff;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 24px;
+  flex: 1;
   height: 24px;
   cursor: pointer;
+  background: linear-gradient(135deg, #3742fa 0%, #2f3542 50%, #40739e 100%);
+  color: white;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  box-shadow: 0 4px 16px rgba(55, 66, 250, 0.3), 
+              0 2px 6px rgba(0, 0, 0, 0.2),
+              inset 0 1px 2px rgba(255, 255, 255, 0.3),
+              inset 0 -1px 1px rgba(0, 0, 0, 0.1);
+  border: 1.5px solid rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(12px);
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform: translateZ(0) scale(0.95);
+  opacity: 0.92;
 }
 
-.edit-mode .delete-shortcut,
-.edit-mode .edit-shortcut {
-  display: block;
+.edit-shortcut:hover {
+  background: linear-gradient(135deg, #2f3542 0%, #40739e 50%, #487eb0 100%);
+  transform: translateZ(0) scale(1.08);
+  box-shadow: 0 8px 24px rgba(55, 66, 250, 0.5), 
+              0 4px 12px rgba(0, 0, 0, 0.3),
+              inset 0 1px 3px rgba(255, 255, 255, 0.4),
+              inset 0 -1px 2px rgba(0, 0, 0, 0.1);
+  border-color: rgba(255, 255, 255, 0.9);
+  opacity: 1;
+}
+
+.edit-shortcut:active {
+  transform: translateZ(0) scale(0.88);
+  box-shadow: 0 2px 8px rgba(55, 66, 250, 0.3);
+  transition: all 0.1s ease-out;
+}
+
+.edit-mode .shortcut-buttons {
+  display: flex;
 }
 
 .add-shortcut {
@@ -333,30 +403,152 @@ body.dark-mode .edit-button:hover {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0,0,0,0.7);
   z-index: 1000;
   justify-content: center;
   align-items: center;
+  backdrop-filter: blur(5px);
 }
 
 .modal-content {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  width: 300px;
+  background: rgba(0,0,0,0.8);
+  color: white;
+  padding: 30px;
+  border-radius: 25px;
+  width: 400px;
+  max-width: 90vw;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.modal-content h3 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: white;
+  text-align: center;
+  font-size: 1.3em;
 }
 
 .modal-content input {
-  width: 100%;
+  width: calc(100% - 20px);
   margin: 10px 0;
-  padding: 5px;
+  padding: 12px;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 8px;
+  background: rgba(255,255,255,0.1);
+  color: white;
+  font-size: 14px;
+}
+
+.modal-content input::placeholder {
+  color: rgba(255,255,255,0.6);
+}
+
+.modal-content input:focus {
+  outline: none;
+  border-color: rgba(255,255,255,0.4);
+  background: rgba(255,255,255,0.15);
+}
+
+.modal-content label {
+  color: white !important;
+}
+
+#fetchingIndicator {
+  color: rgba(255,255,255,0.7) !important;
+  font-style: italic;
+  text-align: center;
+}
+
+body.dark-mode .modal-content {
+  background: rgba(255,255,255,0.8);
+  color: black;
+  border: 1px solid rgba(0,0,0,0.1);
+}
+
+body.dark-mode .modal-content h3 {
+  color: black;
+}
+
+body.dark-mode .modal-content input {
+  background: rgba(0,0,0,0.1);
+  color: black;
+  border: 1px solid rgba(0,0,0,0.2);
+}
+
+body.dark-mode .modal-content input::placeholder {
+  color: rgba(0,0,0,0.6);
+}
+
+body.dark-mode .modal-content input:focus {
+  background: rgba(0,0,0,0.15);
+  border-color: rgba(0,0,0,0.4);
+}
+
+body.dark-mode .modal-content label {
+  color: black !important;
+}
+
+body.dark-mode #fetchingIndicator {
+  color: rgba(0,0,0,0.7) !important;
 }
 
 .modal-buttons {
   display: flex;
   justify-content: flex-end;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.modal-buttons button {
+  padding: 10px 20px;
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 8px;
+  background: rgba(255,255,255,0.1);
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+}
+
+.modal-buttons button:hover {
+  background: rgba(255,255,255,0.2);
+  border-color: rgba(255,255,255,0.5);
+}
+
+.modal-buttons button:active {
+  transform: scale(0.98);
+}
+
+body.dark-mode .modal-buttons button {
+  background: rgba(0,0,0,0.1);
+  color: black;
+  border: 1px solid rgba(0,0,0,0.3);
+}
+
+body.dark-mode .modal-buttons button:hover {
+  background: rgba(0,0,0,0.2);
+  border-color: rgba(0,0,0,0.5);
+}
+
+.modal-checkbox-container {
+  display: flex;
+  align-items: center;
   gap: 10px;
-  margin-top: 10px;
+  margin: 10px 0;
+  padding: 12px 0;
+}
+
+.modal-checkbox-container input[type="checkbox"] {
+  width: auto !important;
+  margin: 0 !important;
+  transform: scale(1.2);
+}
+
+.modal-checkbox-container label {
+  margin: 0 !important;
+  white-space: nowrap;
+  cursor: pointer;
 }
     
     .burger-menu {
@@ -389,7 +581,7 @@ body.dark-mode .edit-button:hover {
 }
 
 .burger-button.active span:nth-child(1) {
-  transform: rotate(45deg) translate(5px, 5px);
+  transform: rotate(45deg) translate(5.5px, 5.5px);
 }
 
 .burger-button.active span:nth-child(2) {
@@ -397,7 +589,7 @@ body.dark-mode .edit-button:hover {
 }
 
 .burger-button.active span:nth-child(3) {
-  transform: rotate(-45deg) translate(5px, -5px);
+  transform: rotate(-45deg) translate(5.5px, -5.5px); 
 }
 
 .menu-content {
@@ -585,14 +777,16 @@ body.dark-mode .chevron-icon {
   display: flex;
   gap: var(--gap-size);
   max-width: 0;
+  height: 0; /* Prevent taking up vertical space when collapsed */
   opacity: 0;
   overflow: hidden;
-  transition: max-width 0.4s ease, opacity 0.4s ease;
-  flex-wrap: nowrap;
+  transition: max-width 0.4s ease, opacity 0.4s ease, height 0.4s ease;
+  flex-wrap: wrap;
 }
 
 .hidden-shortcuts-container.expanded {
   max-width: 2000px; /* Large enough to accommodate hidden shortcuts */
+  height: auto; /* Allow natural height when expanded */
   opacity: 1;
 }
 
@@ -617,7 +811,7 @@ body.dark-mode .chevron-icon {
   text-decoration: none;
 }
 
-.hidden-shortcut:hover {
+body:not(.edit-mode) .hidden-shortcut:hover {
   opacity: 1;
   scale: 1.05;
 }
@@ -666,6 +860,25 @@ body.dark-mode .hidden-shortcut .shortcutimg {
   margin-bottom: 5px;
   text-align: center;
 }
+
+.shortcut-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: var(--shortcut-size);
+}
+
+.shortcut-buttons {
+  display: none;
+  flex-direction: row;
+  gap: 10px;
+  width: 100%;
+  margin-top: 5px;
+}
+
+.edit-mode .shortcut-buttons {
+  display: flex;
+}
   </style>
 </head>
 
@@ -680,6 +893,7 @@ body.dark-mode .hidden-shortcut .shortcutimg {
     <div class="menu-content">
       <button class="menu-button" onclick="toggleMode()">Toggle theme</button>
       <button class="menu-button" onclick="toggleEditMode()">Edit shortcuts</button>
+      <button class="menu-button" id="toggleHiddenButton" onclick="toggleAllHidden()">Show all hidden</button>
       <button class="menu-button" onclick="exportConfig()">Export config</button>
       <button class="menu-button" onclick="importConfig()">Import config</button>
       <hr style="border: 1px solid rgba(255,255,255,0.2); width: 90%; margin: 5px auto;">
@@ -757,17 +971,25 @@ body.dark-mode .hidden-shortcut .shortcutimg {
   
   <div id="editModal" class="modal">
     <div class="modal-content">
-      <h3>Edit Shortcut</h3>
-      <input type="text" id="editTitle" placeholder="Title">
-      <input type="text" id="editUrl" placeholder="URL">
-      <input type="text" id="editImage" placeholder="Image URL">
-      <div style="display: flex; align-items: center; gap: 10px; margin: 10px 0;">
-        <input type="checkbox" id="editHidden">
-        <label for="editHidden" style="color: #333;">Hide in collapsed view</label>
+      <h3 id="modalTitle">Add Shortcut</h3>
+      <div id="urlInputSection">
+        <input type="text" id="editUrl" placeholder="Enter website URL (e.g., https://youtube.com)">
+        <div id="fetchingIndicator" style="display: none; color: #666; margin: 5px 0;">
+          Fetching site information...
+        </div>
+      </div>
+      <div id="detailsSection" style="display: none;">
+        <input type="text" id="editTitle" placeholder="Title">
+        <input type="text" id="editImage" placeholder="Image URL">
+        <div class="modal-checkbox-container">
+          <input type="checkbox" id="editHidden">
+          <label for="editHidden">Hide in collapsed view</label>
+        </div>
       </div>
       <div class="modal-buttons">
         <button onclick="closeModal()">Cancel</button>
-        <button onclick="saveShortcut()">Save</button>
+        <button id="fetchButton" onclick="fetchSiteInfo()" style="display: none;">Fetch Info</button>
+        <button id="saveButton" onclick="saveShortcut()" style="display: none;">Save</button>
       </div>
     </div>
   </div>
@@ -775,11 +997,9 @@ body.dark-mode .hidden-shortcut .shortcutimg {
   <div id="container"></div>
 
   <script>
-    // Configuration
-    const LINKS_FILENAME = 'links.json'; // Change this to use a different links file (e.g., 'links-work.json', 'links-gaming.json')
-    
     let editMode = false;
     let currentEditingShortcut = null;
+    let currentEditingSectionName = null;
 
     function toggleEditMode() {
       editMode = !editMode;
@@ -890,82 +1110,136 @@ body.dark-mode .hidden-shortcut .shortcutimg {
     row.className = 'section-row';
     row.setAttribute('data-section', sectionName);
 
-    links.forEach((item, index) => {
-      // Skip hidden shortcuts - they'll be handled separately
-      if (item.hidden) return;
-      
-      const shortDiv = document.createElement('a');
-      shortDiv.href = editMode ? 'javascript:void(0)' : item.url;
-      //shortDiv.target = '_blank';
-      shortDiv.className = 'shortcut';
-      shortDiv.style.setProperty('--shortcut-background', `url('${item.image}')`);
-      shortDiv.setAttribute('title', item.title);
-      shortDiv.setAttribute('draggable', 'true');
-      shortDiv.setAttribute('data-index', index);
-
-      // Add drag and drop event listeners
-      shortDiv.addEventListener('dragstart', handleDragStart);
-      shortDiv.addEventListener('dragend', handleDragEnd);
-      shortDiv.addEventListener('dragover', handleDragOver);
-      shortDiv.addEventListener('dragenter', handleDragEnter);
-      shortDiv.addEventListener('dragleave', handleDragLeave);
-      shortDiv.addEventListener('drop', handleDrop);
-
-      if (editMode) {
-        shortDiv.innerHTML = `
-          <button class="delete-shortcut" onclick="deleteShortcut(this)">×</button>
-          <button class="edit-shortcut" onclick="editShortcut(this)">✎</button>
-          <img src="${item.image}" class="shortcutimg" alt="${item.title}" />
-          <div class="title">${item.title}</div>
-        `;
-      } else {
-        shortDiv.innerHTML = `
-          <img src="${item.image}" class="shortcutimg" alt="${item.title}" />
-          <div class="title">${item.title}</div>
-        `;
-      }
-      row.appendChild(shortDiv);
-    });
-
-    // Check if there are hidden shortcuts
-    const hiddenShortcuts = links.filter(item => item.hidden);
-    if (hiddenShortcuts.length > 0) {
-      // Create hidden shortcuts container for inline expansion
-      const hiddenContainer = document.createElement('div');
-      hiddenContainer.className = 'hidden-shortcuts-container';
-      
-      hiddenShortcuts.forEach((item, index) => {
-        const hiddenShortcut = document.createElement('a');
-        hiddenShortcut.href = item.url;
-        hiddenShortcut.target = '_blank';
-        hiddenShortcut.className = 'hidden-shortcut';
-        hiddenShortcut.style.setProperty('--shortcut-background', `url("${item.image}")`);
+    if (editMode) {
+      // In edit mode, render ALL shortcuts (hidden and visible) in the main row
+      links.forEach((item, index) => {
+        // Create wrapper for shortcut and buttons
+        const shortcutWrapper = document.createElement('div');
+        shortcutWrapper.className = 'shortcut-wrapper';
         
-        hiddenShortcut.innerHTML = `
-          <img src="${item.image}" alt="${item.title}" class="shortcutimg" />
+        const shortDiv = document.createElement('a');
+        shortDiv.href = 'javascript:void(0)';
+        shortDiv.className = 'shortcut';
+        shortDiv.style.setProperty('--shortcut-background', `url('${item.image}')`);
+        shortDiv.setAttribute('title', item.title);
+        shortDiv.setAttribute('draggable', 'true');
+        shortDiv.setAttribute('data-index', index);
+
+        // Add drag and drop event listeners
+        shortDiv.addEventListener('dragstart', handleDragStart);
+        shortDiv.addEventListener('dragend', handleDragEnd);
+        shortDiv.addEventListener('dragover', handleDragOver);
+        shortDiv.addEventListener('dragenter', handleDragEnter);
+        shortDiv.addEventListener('dragleave', handleDragLeave);
+        shortDiv.addEventListener('drop', handleDrop);
+
+        shortDiv.innerHTML = `
+          <img src="${item.image}" class="shortcutimg" alt="${item.title}" />
           <div class="title">${item.title}</div>
         `;
-        hiddenContainer.appendChild(hiddenShortcut);
+        
+        shortcutWrapper.appendChild(shortDiv);
+
+        const buttonsDiv = document.createElement('div');
+        buttonsDiv.className = 'shortcut-buttons';
+        buttonsDiv.innerHTML = `
+          <div class="edit-shortcut" onclick="editShortcut(this)">EDIT</div>
+          <div class="delete-shortcut" onclick="deleteShortcut(this)">×</div>
+        `;
+        shortcutWrapper.appendChild(buttonsDiv);
+        
+        row.appendChild(shortcutWrapper);
       });
-      
-      // Create chevron button
-      const chevronButton = document.createElement('div');
-      chevronButton.className = 'chevron-button';
-      chevronButton.innerHTML = '<span class="chevron-icon"></span>';
-      chevronButton.setAttribute('role', 'button');
-      chevronButton.setAttribute('tabindex', '0');
-      chevronButton.setAttribute('aria-expanded', 'false');
-      chevronButton.setAttribute('aria-label', 'Show hidden shortcuts');
-      
-      chevronButton.addEventListener('click', () => {
-        const isExpanded = chevronButton.classList.toggle('expanded');
-        hiddenContainer.classList.toggle('expanded');
-        chevronButton.setAttribute('aria-expanded', isExpanded);
+    } else {
+      // In normal mode, render visible shortcuts first
+      links.forEach((item, index) => {
+        // Skip hidden shortcuts - they'll be handled separately
+        if (item.hidden) return;
+        
+        // Create wrapper for shortcut and buttons
+        const shortcutWrapper = document.createElement('div');
+        shortcutWrapper.className = 'shortcut-wrapper';
+        
+        const shortDiv = document.createElement('a');
+        shortDiv.href = item.url;
+        shortDiv.className = 'shortcut';
+        shortDiv.style.setProperty('--shortcut-background', `url('${item.image}')`);
+        shortDiv.setAttribute('title', item.title);
+        shortDiv.setAttribute('draggable', 'true');
+        shortDiv.setAttribute('data-index', index);
+
+        // Add drag and drop event listeners
+        shortDiv.addEventListener('dragstart', handleDragStart);
+        shortDiv.addEventListener('dragend', handleDragEnd);
+        shortDiv.addEventListener('dragover', handleDragOver);
+        shortDiv.addEventListener('dragenter', handleDragEnter);
+        shortDiv.addEventListener('dragleave', handleDragLeave);
+        shortDiv.addEventListener('drop', handleDrop);
+
+        shortDiv.innerHTML = `
+          <img src="${item.image}" class="shortcutimg" alt="${item.title}" />
+          <div class="title">${item.title}</div>
+        `;
+        
+        shortcutWrapper.appendChild(shortDiv);
+        row.appendChild(shortcutWrapper);
       });
 
-      // Add hidden container and chevron to row
-      row.appendChild(hiddenContainer);
-      row.appendChild(chevronButton);
+      // Check if there are hidden shortcuts
+      const hiddenShortcuts = links.filter(item => item.hidden);
+      if (hiddenShortcuts.length > 0) {
+        // Create hidden shortcuts container for inline expansion
+        const hiddenContainer = document.createElement('div');
+        hiddenContainer.className = 'hidden-shortcuts-container';
+        
+        hiddenShortcuts.forEach((item, index) => {
+          // Create wrapper for hidden shortcut and buttons
+          const hiddenWrapper = document.createElement('div');
+          hiddenWrapper.className = 'shortcut-wrapper';
+          
+          const hiddenShortcut = document.createElement('a');
+          hiddenShortcut.href = item.url;
+          hiddenShortcut.target = '_blank';
+          hiddenShortcut.className = 'hidden-shortcut';
+          hiddenShortcut.style.setProperty('--shortcut-background', `url("${item.image}")`);
+          hiddenShortcut.setAttribute('title', item.title);
+          hiddenShortcut.setAttribute('draggable', 'true');
+          // Find the actual index in the original links array for hidden shortcuts
+          const actualIndex = links.findIndex(link => link === item);
+          hiddenShortcut.setAttribute('data-index', actualIndex);
+          
+          hiddenShortcut.innerHTML = `
+            <img src="${item.image}" alt="${item.title}" class="shortcutimg" />
+            <div class="title">${item.title}</div>
+          `;
+          
+          hiddenWrapper.appendChild(hiddenShortcut);
+          hiddenContainer.appendChild(hiddenWrapper);
+        });
+        
+        // Create chevron button
+        const chevronButton = document.createElement('div');
+        chevronButton.className = 'chevron-button';
+        chevronButton.innerHTML = '<span class="chevron-icon"></span>';
+        chevronButton.setAttribute('role', 'button');
+        chevronButton.setAttribute('tabindex', '0');
+        chevronButton.setAttribute('aria-expanded', 'false');
+        chevronButton.setAttribute('aria-label', 'Show hidden shortcuts');
+        
+        chevronButton.addEventListener('click', () => {
+          const isExpanded = chevronButton.classList.toggle('expanded');
+          hiddenContainer.classList.toggle('expanded');
+          chevronButton.setAttribute('aria-expanded', isExpanded);
+          chevronButton.setAttribute('aria-label', isExpanded ? 'Hide hidden shortcuts' : 'Show hidden shortcuts');
+          
+          // Update the toggle all button text based on current state
+          updateToggleAllButtonText();
+        });
+
+        // Add hidden container and chevron to row
+        row.appendChild(hiddenContainer);
+        row.appendChild(chevronButton);
+      }
     }
 
     if (editMode) {
@@ -980,6 +1254,33 @@ body.dark-mode .hidden-shortcut .shortcutimg {
     container.appendChild(sectionWrapper);
   });
 }
+
+function updateToggleAllButtonText() {
+      const toggleButton = document.getElementById('toggleHiddenButton');
+      if (!toggleButton) return;
+      
+      const hiddenContainers = document.querySelectorAll('.hidden-shortcuts-container');
+      if (hiddenContainers.length === 0) {
+        toggleButton.textContent = 'Show all hidden';
+        return;
+      }
+      
+      const anyExpanded = Array.from(hiddenContainers).some(container => 
+        container.classList.contains('expanded')
+      );
+      
+      const allExpanded = Array.from(hiddenContainers).every(container => 
+        container.classList.contains('expanded')
+      );
+      
+      if (allExpanded) {
+        toggleButton.textContent = 'Hide all hidden';
+      } else if (anyExpanded) {
+        toggleButton.textContent = 'Show all hidden';
+      } else {
+        toggleButton.textContent = 'Show all hidden';
+      }
+    }
 
 // Add these functions after the loadLinks function
 let draggedElement = null;
@@ -1082,19 +1383,30 @@ async function reorderShortcuts(sourceSection, targetSection, sourceIndex, targe
 }
 
     function deleteShortcut(button) {
-      const shortcut = button.parentElement;
-      const row = shortcut.parentElement;
-      shortcut.remove();
+      const shortcutWrapper = button.closest('.shortcut-wrapper');
+      const row = shortcutWrapper.parentElement;
+      shortcutWrapper.remove();
       saveChanges();
     }
 
     function editShortcut(button) {
-    currentEditingShortcut = button.parentElement;
+    const shortcutWrapper = button.closest('.shortcut-wrapper');
+    const shortcut = shortcutWrapper.querySelector('.shortcut, .hidden-shortcut');
+    currentEditingShortcut = shortcut;
     const modal = document.getElementById('editModal');
     const titleInput = document.getElementById('editTitle');
     const urlInput = document.getElementById('editUrl');
     const imageInput = document.getElementById('editImage');
     const hiddenInput = document.getElementById('editHidden');
+
+    // Set modal title for editing
+    document.getElementById('modalTitle').textContent = 'Edit Shortcut';
+    
+    // Show URL section with fetch button for editing
+    document.getElementById('urlInputSection').style.display = 'block';
+    document.getElementById('detailsSection').style.display = 'block';
+    document.getElementById('fetchButton').style.display = 'inline-block';
+    document.getElementById('saveButton').style.display = 'inline-block';
 
     titleInput.value = currentEditingShortcut.querySelector('.title').textContent;
     urlInput.value = currentEditingShortcut.href;
@@ -1122,35 +1434,202 @@ async function reorderShortcuts(sourceSection, targetSection, sourceIndex, targe
 }
 
     function closeModal() {
-      document.getElementById('editModal').style.display = 'none';
+      const modal = document.getElementById('editModal');
+      modal.style.display = 'none';
+      
+      // Reset modal state
+      document.getElementById('urlInputSection').style.display = 'block';
+      document.getElementById('detailsSection').style.display = 'none';
+      document.getElementById('fetchingIndicator').style.display = 'none';
+      document.getElementById('fetchButton').style.display = 'none';
+      document.getElementById('saveButton').style.display = 'none';
+      
+      // Clear inputs
+      document.getElementById('editUrl').value = '';
+      document.getElementById('editTitle').value = '';
+      document.getElementById('editImage').value = '';
+      document.getElementById('editHidden').checked = false;
+      
+      currentEditingShortcut = null;
     }
 
-    function saveShortcut() {
-      if (currentEditingShortcut) {
-        const title = document.getElementById('editTitle').value;
-        const url = document.getElementById('editUrl').value;
-        const image = document.getElementById('editImage').value;
-        const hidden = document.getElementById('editHidden').checked;
-
-        currentEditingShortcut.href = url;
-        currentEditingShortcut.querySelector('.title').textContent = title;
-        currentEditingShortcut.querySelector('.shortcutimg').src = image;
-        currentEditingShortcut.style.setProperty('--shortcut-background', `url('${image}')`);
-        
-        // Store hidden property as data attribute for now
-        currentEditingShortcut.setAttribute('data-hidden', hidden);
+    async function fetchSiteInfo() {
+      const urlInput = document.getElementById('editUrl');
+      const titleInput = document.getElementById('editTitle');
+      const imageInput = document.getElementById('editImage');
+      const fetchingIndicator = document.getElementById('fetchingIndicator');
+      const fetchButton = document.getElementById('fetchButton');
+      const saveButton = document.getElementById('saveButton');
+      const detailsSection = document.getElementById('detailsSection');
+      
+      let url = urlInput.value.trim();
+      
+      if (!url) {
+        alert('Please enter a URL');
+        return;
       }
+      
+      // Add https:// if no protocol is specified
+      if (!url.match(/^https?:\/\//)) {
+        url = 'https://' + url;
+        urlInput.value = url;
+      }
+      
+      // Validate URL
+      try {
+        new URL(url);
+      } catch (e) {
+        alert('Please enter a valid URL');
+        return;
+      }
+      
+      fetchingIndicator.style.display = 'block';
+      fetchButton.style.display = 'none';
+      
+      try {
+        // Extract domain for favicon
+        const domain = new URL(url).hostname;
+        
+        // Try to fetch the page title
+        let title = domain;
+        try {
+          // This is a simple approach - in a real implementation you might want to use a service
+          // For now, we'll use the domain as the title and let users edit it
+          title = domain.replace('www.', '').split('.')[0];
+          title = title.charAt(0).toUpperCase() + title.slice(1);
+        } catch (titleError) {
+          console.warn('Could not fetch page title:', titleError);
+        }
+        
+        // Generate favicon URL
+        const faviconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
+        
+        // Populate the form
+        titleInput.value = title;
+        imageInput.value = faviconUrl;
+        
+        // Show details section
+        detailsSection.style.display = 'block';
+        saveButton.style.display = 'inline-block';
+        
+      } catch (error) {
+        console.error('Error fetching site info:', error);
+        alert('Could not fetch site information. Please fill in the details manually.');
+        
+        // Show details section anyway so user can manually enter info
+        detailsSection.style.display = 'block';
+        saveButton.style.display = 'inline-block';
+      }
+      
+      fetchingIndicator.style.display = 'none';
+    }
 
+    async function saveShortcut() {
+      const title = document.getElementById('editTitle').value.trim();
+      const url = document.getElementById('editUrl').value.trim();
+      const image = document.getElementById('editImage').value.trim();
+      const hidden = document.getElementById('editHidden').checked;
+      
+      if (!title || !url || !image) {
+        alert('Please fill in all fields');
+        return;
+      }
+      
+      try {
+        // Load current data
+        const response = await fetch(LINKS_FILENAME);
+        if (!response.ok) throw new Error('Failed to fetch current data');
+        const data = await response.json();
+        
+        if (currentEditingShortcut) {
+          // Editing existing shortcut
+          const sectionName = currentEditingShortcut.closest('.section-row').getAttribute('data-section');
+          const shortcutIndex = parseInt(currentEditingShortcut.getAttribute('data-index'));
+          
+          // Update the data
+          data[sectionName][shortcutIndex] = { title, url, image, hidden };
+          
+          // Update the UI element
+          currentEditingShortcut.href = url;
+          currentEditingShortcut.querySelector('.title').textContent = title;
+          currentEditingShortcut.querySelector('.shortcutimg').src = image;
+          currentEditingShortcut.style.setProperty('--shortcut-background', `url('${image}')`);
+          currentEditingShortcut.setAttribute('data-hidden', hidden);
+        } else {
+          // Adding new shortcut - we need to know which section
+          const sectionName = currentEditingSectionName; // We'll need to store this
+          if (!sectionName || !data[sectionName]) {
+            alert('Error: Could not determine which section to add to');
+            return;
+          }
+          
+          // Add to data
+          data[sectionName].push({ title, url, image, hidden });
+        }
+        
+        // Try to save the data
+        try {
+          const saveResponse = await fetch(LINKS_FILENAME, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data, null, 2)
+          });
+          
+          if (!saveResponse.ok) throw new Error('Save failed');
+          
+          console.log('Successfully saved shortcut');
+          
+          // Refresh the UI to show changes
+          refreshUI();
+          
+        } catch (saveError) {
+          console.warn('Could not save to file (expected in static hosting):', saveError);
+          
+          // For now, just update the UI and inform the user
+          if (!currentEditingShortcut) {
+            // For new shortcuts, refresh UI to show the change temporarily
+            refreshUI();
+          }
+          
+          alert('Shortcut updated in the interface, but could not be saved to file. Changes will be lost on page reload. To persist changes, you need a server that supports file writing.');
+        }
+        
+      } catch (error) {
+        console.error('Error saving shortcut:', error);
+        alert('Error saving shortcut: ' + error.message);
+      }
+      
       closeModal();
-      saveChanges();
     }
 
     function addShortcut(sectionName) {
       currentEditingShortcut = null;
-      document.getElementById('editTitle').value = '';
+      currentEditingSectionName = sectionName;
+      
+      // Set modal title for adding
+      document.getElementById('modalTitle').textContent = `Add Shortcut to ${sectionName}`;
+      
+      // Reset modal state
+      document.getElementById('urlInputSection').style.display = 'block';
+      document.getElementById('detailsSection').style.display = 'none';
+      document.getElementById('fetchingIndicator').style.display = 'none';
+      document.getElementById('fetchButton').style.display = 'inline-block';
+      document.getElementById('saveButton').style.display = 'none';
+      
+      // Clear inputs
       document.getElementById('editUrl').value = '';
+      document.getElementById('editTitle').value = '';
       document.getElementById('editImage').value = '';
+      document.getElementById('editHidden').checked = false;
+      
       document.getElementById('editModal').style.display = 'flex';
+      
+      // Focus on URL input
+      setTimeout(() => {
+        document.getElementById('editUrl').focus();
+      }, 100);
     }
 
     function saveChanges() {
@@ -1232,7 +1711,96 @@ async function reorderShortcuts(sourceSection, targetSection, sourceIndex, targe
     }
 }
 
+    function toggleAllHidden() {
+      // Check if we're in edit mode - this feature is only for normal mode
+      if (editMode) {
+        return;
+      }
+      
+      const toggleButton = document.getElementById('toggleHiddenButton');
+      const chevronButtons = document.querySelectorAll('.chevron-button');
+      const hiddenContainers = document.querySelectorAll('.hidden-shortcuts-container');
+      
+      // Check current state - if any hidden container is expanded, we'll collapse all
+      // If all are collapsed, we'll expand all
+      const anyExpanded = Array.from(hiddenContainers).some(container => 
+        container.classList.contains('expanded')
+      );
+      
+      if (anyExpanded) {
+        // Hide all hidden shortcuts
+        chevronButtons.forEach(chevron => {
+          const hiddenContainer = chevron.closest('.section-row').querySelector('.hidden-shortcuts-container');
+          if (hiddenContainer && hiddenContainer.classList.contains('expanded')) {
+            chevron.classList.remove('expanded');
+            hiddenContainer.classList.remove('expanded');
+            chevron.setAttribute('aria-expanded', 'false');
+            chevron.setAttribute('aria-label', 'Show hidden shortcuts');
+          }
+        });
+        toggleButton.textContent = 'Show all hidden';
+      } else {
+        // Show all hidden shortcuts
+        chevronButtons.forEach(chevron => {
+          const hiddenContainer = chevron.closest('.section-row').querySelector('.hidden-shortcuts-container');
+          if (hiddenContainer && !hiddenContainer.classList.contains('expanded')) {
+            chevron.classList.add('expanded');
+            hiddenContainer.classList.add('expanded');
+            chevron.setAttribute('aria-expanded', 'true');
+            chevron.setAttribute('aria-label', 'Hide hidden shortcuts');
+          }
+        });
+        toggleButton.textContent = 'Hide all hidden';
+      }
+    }
+
+    function updateToggleAllButtonText() {
+      const toggleButton = document.getElementById('toggleHiddenButton');
+      if (!toggleButton) return;
+      
+      const hiddenContainers = document.querySelectorAll('.hidden-shortcuts-container');
+      if (hiddenContainers.length === 0) {
+        toggleButton.textContent = 'Show all hidden';
+        return;
+      }
+      
+      const anyExpanded = Array.from(hiddenContainers).some(container => 
+        container.classList.contains('expanded')
+      );
+      
+      const allExpanded = Array.from(hiddenContainers).every(container => 
+        container.classList.contains('expanded')
+      );
+      
+      if (allExpanded) {
+        toggleButton.textContent = 'Hide all hidden';
+      } else if (anyExpanded) {
+        toggleButton.textContent = 'Show all hidden';
+      } else {
+        toggleButton.textContent = 'Show all hidden';
+      }
+    }
+
     loadLinks();
+
+    // Initialize URL input event listener for add shortcut functionality
+    document.getElementById('editUrl').addEventListener('input', function() {
+      const url = this.value.trim();
+      const fetchButton = document.getElementById('fetchButton');
+      
+      if (url && !currentEditingShortcut) {
+        fetchButton.style.display = 'inline-block';
+      } else if (!currentEditingShortcut) {
+        fetchButton.style.display = 'none';
+      }
+    });
+    
+    // Allow Enter key to trigger fetch when in URL input
+    document.getElementById('editUrl').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter' && !currentEditingShortcut && this.value.trim()) {
+        fetchSiteInfo();
+      }
+    });
 
     // Add the shortcut size control handlers
     const shortcutSizeSlider = document.getElementById('shortcutSizeSlider');
@@ -1338,7 +1906,7 @@ async function reorderShortcuts(sourceSection, targetSection, sourceIndex, targe
                     const row = document.createElement('div');
                     row.className = 'section-row';
         
-                    links.forEach(item => {
+                    links.forEach((item) => {
                         // Skip hidden shortcuts for main display
                         if (item.hidden) return;
                         
@@ -1390,6 +1958,10 @@ async function reorderShortcuts(sourceSection, targetSection, sourceIndex, targe
                             const isExpanded = chevronButton.classList.toggle('expanded');
                             hiddenContainer.classList.toggle('expanded');
                             chevronButton.setAttribute('aria-expanded', isExpanded);
+                            chevronButton.setAttribute('aria-label', isExpanded ? 'Hide hidden shortcuts' : 'Show hidden shortcuts');
+                            
+                            // Update the toggle all button text based on current state
+                            updateToggleAllButtonText();
                         });
                         
                         // Add hidden container and chevron to row
@@ -1595,6 +2167,8 @@ document.addEventListener('keydown', (e) => {
         overlay.style.filter = `blur(${blur}px) brightness(${brightness}) contrast(${contrast})`;
     };
 
+   
+
     const updateShadow = () => {
         const shadow = document.getElementById('shadowSlider').value;
         document.getElementById('shadowValue').textContent = shadow;
@@ -1745,6 +2319,48 @@ document.getElementById('autoFitEnabled').addEventListener('change', function(e)
     }
 });
 
+function toggleAllHidden() {
+      // Check if we're in edit mode - this feature is only for normal mode
+      if (editMode) {
+        return;
+      }
+      
+      const toggleButton = document.getElementById('toggleHiddenButton');
+      const chevronButtons = document.querySelectorAll('.chevron-button');
+      const hiddenContainers = document.querySelectorAll('.hidden-shortcuts-container');
+      
+      // Check current state - if any hidden container is expanded, we'll collapse all
+      // If all are collapsed, we'll expand all
+      const anyExpanded = Array.from(hiddenContainers).some(container => 
+        container.classList.contains('expanded')
+      );
+      
+      if (anyExpanded) {
+        // Hide all hidden shortcuts
+        chevronButtons.forEach(chevron => {
+          const hiddenContainer = chevron.closest('.section-row').querySelector('.hidden-shortcuts-container');
+          if (hiddenContainer && hiddenContainer.classList.contains('expanded')) {
+            chevron.classList.remove('expanded');
+            hiddenContainer.classList.remove('expanded');
+            chevron.setAttribute('aria-expanded', 'false');
+            chevron.setAttribute('aria-label', 'Show hidden shortcuts');
+          }
+        });
+        toggleButton.textContent = 'Show all hidden';
+      } else {
+        // Show all hidden shortcuts
+        chevronButtons.forEach(chevron => {
+          const hiddenContainer = chevron.closest('.section-row').querySelector('.hidden-shortcuts-container');
+          if (hiddenContainer && !hiddenContainer.classList.contains('expanded')) {
+            chevron.classList.add('expanded');
+            hiddenContainer.classList.add('expanded');
+            chevron.setAttribute('aria-expanded', 'true');
+            chevron.setAttribute('aria-label', 'Hide hidden shortcuts');
+          }
+        });
+        toggleButton.textContent = 'Hide all hidden';
+      }
+    }
   </script>
 </body>
 </html>
