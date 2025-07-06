@@ -26,7 +26,6 @@
       margin: 0;
       padding: 0;
       font-family: sans-serif;
-      background-color: var(--light-bg);
       color: var(--light-text);
       transition: background-color 0.3s, color 0.3s;
       width: 100%;
@@ -48,9 +47,6 @@
       z-index: -1;
       filter:brightness(1) contrast(1);
     }
-    /* .background-overlay.dark-mode {
-      filter:brightness(0.6) contrast(1);
-    } */
 
     .toggle {
       position: absolute;
@@ -260,7 +256,6 @@ body.dark-mode .config-button:hover {
   position: absolute;
   top: 10px;
   right: 120px;
-  padding: 8px 12px;
   border: none;
   border-radius: 5px;
   background: rgba(0, 0, 0, 0.5);
@@ -316,7 +311,6 @@ body.dark-mode .edit-button:hover {
 
 .delete-shortcut:hover {
   background: linear-gradient(135deg, #ff3742 0%, #e55039 50%, #c44569 100%);
-  transform: translateZ(0) scale(1.08);
   box-shadow: 0 8px 24px rgba(255, 71, 87, 0.5), 
               0 4px 12px rgba(0, 0, 0, 0.3),
               inset 0 1px 3px rgba(255, 255, 255, 0.4),
@@ -357,11 +351,11 @@ body.dark-mode .edit-button:hover {
   transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   transform: translateZ(0) scale(0.95);
   opacity: 0.92;
+  min-width: 0;
 }
 
 .edit-shortcut:hover {
   background: linear-gradient(135deg, #2f3542 0%, #40739e 50%, #487eb0 100%);
-  transform: translateZ(0) scale(1.08);
   box-shadow: 0 8px 24px rgba(55, 66, 250, 0.5), 
               0 4px 12px rgba(0, 0, 0, 0.3),
               inset 0 1px 3px rgba(255, 255, 255, 0.4),
@@ -730,7 +724,7 @@ body.dark-mode .menu-button:hover {
 /* Collapsed shortcuts styles */
 .chevron-button {
   position: relative;
-  width: 40px;
+  width: 25px;
   height: var(--shortcut-size);
   /* background: rgba(255, 255, 255, 0.1); */
   /* border: 2px dashed rgba(255, 255, 255, 0.3); */
@@ -1096,7 +1090,7 @@ body.dark-mode .hidden-shortcut .shortcutimg {
     // Create a section wrapper
     const sectionWrapper = document.createElement('div');
     sectionWrapper.className = 'section-wrapper';
-    sectionWrapper.style.cssText = 'display: flex; flex-direction: column; min-width: 300px; flex: 0 1 auto;';
+    sectionWrapper.style.cssText = 'display: flex; flex-direction: column; flex: 0 1 auto;';
 
     const sectionTitle = document.createElement('h2');
     sectionTitle.className = 'section-title';
@@ -1748,33 +1742,6 @@ async function reorderShortcuts(sourceSection, targetSection, sourceIndex, targe
           }
         });
         toggleButton.textContent = 'Hide all hidden';
-      }
-    }
-
-    function updateToggleAllButtonText() {
-      const toggleButton = document.getElementById('toggleHiddenButton');
-      if (!toggleButton) return;
-      
-      const hiddenContainers = document.querySelectorAll('.hidden-shortcuts-container');
-      if (hiddenContainers.length === 0) {
-        toggleButton.textContent = 'Show all hidden';
-        return;
-      }
-      
-      const anyExpanded = Array.from(hiddenContainers).some(container => 
-        container.classList.contains('expanded')
-      );
-      
-      const allExpanded = Array.from(hiddenContainers).every(container => 
-        container.classList.contains('expanded')
-      );
-      
-      if (allExpanded) {
-        toggleButton.textContent = 'Hide all hidden';
-      } else if (anyExpanded) {
-        toggleButton.textContent = 'Show all hidden';
-      } else {
-        toggleButton.textContent = 'Show all hidden';
       }
     }
 
