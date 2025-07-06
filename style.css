@@ -1,0 +1,954 @@
+:root {
+      --light-text: #ffffff;
+      --dark-text: #000000;
+      --light-scfill: 150, 150, 150;
+      --dark-scfill: 50, 50, 50;
+      --shortcut-size: 140px;
+      --gap-size: 10px;
+      --shadow-size: 3px;
+}
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+      color: var(--light-text);
+      transition: background-color 0.3s, color 0.3s;
+      width: 100%;
+      height: 100%;
+    }
+
+    body.dark-mode {
+      color: var(--dark-text);
+    }
+
+    .background-overlay {
+      position: fixed;
+      top: -100px;
+      left: -100px;
+      width: 110%;
+      height: 110%;
+      background: url("https://i.imgur.com/yXXStJ4.jpeg") no-repeat center center fixed;
+      background-size: cover;
+      z-index: -1;
+      filter:brightness(1) contrast(1);
+      background-color:#000000;
+    }
+
+    .toggle {
+      position: absolute;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: inherit;
+      font-size: 1rem;
+      top: 0px;
+      right: 0px;
+    }
+    .toggle.dark-mode {
+      rotate: 180deg;
+      top: -3px;
+      right: 0px;
+    }
+
+    #container {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      margin-top: 30px;
+      margin-left: 30px;
+      gap: 20px;
+      max-width: calc(100vw - 60px);
+    }
+
+    .section-title {
+      text-align: left !important;
+      margin: 15px 0 0 0;
+      font-size: 1.2rem;
+      color: inherit;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+
+    hr {
+        border: 1px solid rgba(255,255,255,0.2);
+        width: 90%;
+        margin: 5px auto;
+    }
+    
+    .section-title,
+    .title {
+      filter: drop-shadow(0 0 12px rgb(var(--light-scfill)));
+    }
+    .section-title.dark-mode {
+      filter: drop-shadow(0 0 12px white);
+    } 
+
+    .section-row {
+      display: flex;
+      flex-flow: row wrap;
+      overflow-x: auto;
+      margin: 10px 0 0 0;
+      padding: 5px 0px 5px 5px; /* Reduced vertical padding for normal mode */
+      justify-content: flex-start;
+      gap: var(--gap-size) var(--gap-size);
+      background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.2) 80%, transparent 100%);
+      border-radius: 30px;
+    }
+
+    .edit-mode .section-row {
+      padding: 10px; /* Full padding in edit mode */
+      padding-bottom: 40px; /* Extra space for edit/delete buttons */
+    }
+
+    .section-title,
+    .shortcut,
+    .shortcutimg,
+    .section-row {
+    transition: all 0.2s ease-in-out;
+  }
+
+    @media (max-width: 719px) {
+      .shortcut {
+        max-width: 110px;
+        max-height: 110px;
+        margin: 15px 5px;
+        transition: max-width 0.2s ease-in-out, max-height 0.2s ease-in-out, margin 0.2s ease-in-out;
+      }
+      .shortcut img {
+        max-width: 50px;
+        max-height: 50px;
+        transition: max-width 0.2s ease-in-out, max-height 0.2s ease-in-out;
+      }
+      .section-row {
+        gap: 15px 5px;
+      }
+    }
+    
+    .shortcut {
+      position: relative;
+      flex: 0 0 auto;
+      width: var(--shortcut-size);
+      height: var(--shortcut-size);
+      /* margin: 0 10px; */
+      border-radius: 25px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: inherit;
+      background: none;
+      background-size: cover;
+      background-position: center;
+      overflow: hidden;
+      opacity: 1;
+      
+    }
+
+    body:not(.edit-mode) .shortcut:hover::before,
+    body:not(.edit-mode) .shortcut:hover {
+      scale: 1.1;
+    }
+
+    body:not(.edit-mode) .shortcut:hover .shortcutimg {
+      filter: drop-shadow(0 0 calc(2px * 1.1) black) drop-shadow(0 0 calc(var(--shadow-size) * 1.1) white);
+    }
+
+    body:not(.edit-mode) .shortcut:hover .shortcutimg.dark-mode {
+      filter: drop-shadow(0 0 calc(2px * 1.1) rgb(229, 229, 229)) 
+              drop-shadow(0 0 calc(var(--shadow-size) * 1.1) black) 
+              drop-shadow(0 0 calc(8px * 1.1) rgb(var(--dark-scfill)));
+    }
+
+    .shortcut::before {
+      content: "";
+     chevron-button position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      filter: blur(12px) brightness(0.5) contrast(0.8) opacity(0.7);
+      transform: scale(0.95, 0.95) translate(0%, -10%);
+      opacity: 1;
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      z-index: 1;
+      /* background-image: var(--shortcut-background); */
+      background-color: rgba(0,0,0,0.4);
+      transition: all 0.2s ease-in-out;
+    }
+    .shortcut.dark-mode::before {
+      background-color: rgb(65, 65, 65);
+      filter: blur(12px) brightness(1) contrast(0.8) opacity(0.5);
+    }
+
+    .shortcutimg {
+      margin-top: 10px;
+      object-fit: contain;
+      position: relative;
+      width: 50%;
+      height: 50%;
+      z-index: 1;
+      filter: drop-shadow(0 0 2px black) drop-shadow(0 0 var(--shadow-size) white); /*drop-shadow(0 0 8px rgb(var(--light-scfill)))*/
+    }
+  
+    .shortcutimg.dark-mode {
+      filter: drop-shadow(0 0 2px rgb(229, 229, 229)) drop-shadow(0 0 var(--shadow-size) black) drop-shadow(0 0 8px rgb(var(--dark-scfill))) ;
+    }
+
+
+    .title {
+      position: relative;
+      z-index: 2;
+      margin-top: 10px;
+      margin-bottom: 5px;
+      text-align: center;
+    }
+    a {
+  text-decoration: none !important;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+    .config-buttons {
+  position: absolute;
+  top: 40px;
+  right: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.config-button {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.config-button:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+body.dark-mode .config-button {
+  background: rgba(255, 255, 255, 0.5);
+  color: black;
+}
+
+body.dark-mode .config-button:hover {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.edit-button {
+  position: absolute;
+  top: 10px;
+  right: 120px;
+  border: none;
+  border-radius: 5px;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.edit-button:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+body.dark-mode .edit-button {
+  background: rgba(255, 255, 255, 0.5);
+  color: black;
+}
+
+body.dark-mode .edit-button:hover {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.edit-mode .shortcut {
+  position: relative;
+}
+
+.delete-shortcut {
+  display: none;
+  position: relative;
+  margin-top: 5px;
+  margin-left: auto;
+  z-index: 3;
+  width: 32px;
+  height: 24px;
+  cursor: pointer;
+  background: linear-gradient(135deg, #ff4757 0%, #ff3742 50%, #e55039 100%);
+  color: white;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 700;
+  box-shadow: 0 4px 16px rgba(255, 71, 87, 0.3), 
+              0 2px 6px rgba(0, 0, 0, 0.2),
+              inset 0 1px 2px rgba(255, 255, 255, 0.3),
+              inset 0 -1px 1px rgba(0, 0, 0, 0.1);
+  border: 1.5px solid rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(12px);
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform: translateZ(0) scale(0.95);
+  opacity: 0.92;
+}
+
+.delete-shortcut:hover {
+  background: linear-gradient(135deg, #ff3742 0%, #e55039 50%, #c44569 100%);
+  box-shadow: 0 8px 24px rgba(255, 71, 87, 0.5), 
+              0 4px 12px rgba(0, 0, 0, 0.3),
+              inset 0 1px 3px rgba(255, 255, 255, 0.4),
+              inset 0 -1px 2px rgba(0, 0, 0, 0.1);
+  border-color: rgba(255, 255, 255, 0.9);
+  opacity: 1;
+}
+
+.delete-shortcut:active {
+  transform: translateZ(0) scale(0.88);
+  box-shadow: 0 2px 8px rgba(255, 71, 87, 0.3);
+  transition: all 0.1s ease-out;
+}
+
+.edit-shortcut {
+  display: none;
+  position: relative;
+  margin-top: 5px;
+  margin-right: 10px;
+  z-index: 3;
+  flex: 1;
+  height: 24px;
+  cursor: pointer;
+  background: linear-gradient(135deg, #3742fa 0%, #2f3542 50%, #40739e 100%);
+  color: white;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  box-shadow: 0 4px 16px rgba(55, 66, 250, 0.3), 
+              0 2px 6px rgba(0, 0, 0, 0.2),
+              inset 0 1px 2px rgba(255, 255, 255, 0.3),
+              inset 0 -1px 1px rgba(0, 0, 0, 0.1);
+  border: 1.5px solid rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(12px);
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform: translateZ(0) scale(0.95);
+  opacity: 0.92;
+  min-width: 0;
+}
+
+.edit-shortcut:hover {
+  background: linear-gradient(135deg, #2f3542 0%, #40739e 50%, #487eb0 100%);
+  box-shadow: 0 8px 24px rgba(55, 66, 250, 0.5), 
+              0 4px 12px rgba(0, 0, 0, 0.3),
+              inset 0 1px 3px rgba(255, 255, 255, 0.4),
+              inset 0 -1px 2px rgba(0, 0, 0, 0.1);
+  border-color: rgba(255, 255, 255, 0.9);
+  opacity: 1;
+}
+
+.edit-shortcut:active {
+  transform: translateZ(0) scale(0.88);
+  box-shadow: 0 2px 8px rgba(55, 66, 250, 0.3);
+  transition: all 0.1s ease-out;
+}
+
+.edit-mode .shortcut-buttons {
+  display: flex;
+}
+
+.add-shortcut {
+  display: none;
+  width: 140px;
+  height: 140px;
+  border: 2px dashed #ccc;
+  border-radius: 25px;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  background: rgba(255,255,255,0.1);
+}
+
+.edit-mode .add-shortcut {
+  display: flex;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.7);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(5px);
+}
+
+.modal-content {
+  background: rgba(0,0,0,0.8);
+  color: white;
+  padding: 30px;
+  border-radius: 25px;
+  width: 400px;
+  max-width: 90vw;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.modal-content h3 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: white;
+  text-align: center;
+  font-size: 1.3em;
+}
+
+.modal-content input {
+  width: calc(100% - 20px);
+  margin: 10px 0;
+  padding: 12px;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 8px;
+  background: rgba(255,255,255,0.1);
+  color: white;
+  font-size: 14px;
+}
+
+.modal-content input::placeholder {
+  color: rgba(255,255,255,0.6);
+}
+
+.modal-content input:focus {
+  outline: none;
+  border-color: rgba(255,255,255,0.4);
+  background: rgba(255,255,255,0.15);
+}
+
+.modal-content label {
+  color: white !important;
+}
+
+#fetchingIndicator {
+  color: rgba(255,255,255,0.7) !important;
+  font-style: italic;
+  text-align: center;
+}
+
+body.dark-mode .modal-content {
+  background: rgba(255,255,255,0.8);
+  color: black;
+  border: 1px solid rgba(0,0,0,0.1);
+}
+
+body.dark-mode .modal-content h3 {
+  color: black;
+}
+
+body.dark-mode .modal-content input {
+  background: rgba(0,0,0,0.1);
+  color: black;
+  border: 1px solid rgba(0,0,0,0.2);
+}
+
+body.dark-mode .modal-content input::placeholder {
+  color: rgba(0,0,0,0.6);
+}
+
+body.dark-mode .modal-content input:focus {
+  background: rgba(0,0,0,0.15);
+  border-color: rgba(0,0,0,0.4);
+}
+
+body.dark-mode .modal-content label {
+  color: black !important;
+}
+
+body.dark-mode #fetchingIndicator {
+  color: rgba(0,0,0,0.7) !important;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.modal-buttons button {
+  padding: 10px 20px;
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 8px;
+  background: rgba(255,255,255,0.1);
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+}
+
+.modal-buttons button:hover {
+  background: rgba(255,255,255,0.2);
+  border-color: rgba(255,255,255,0.5);
+}
+
+.modal-buttons button:active {
+  transform: scale(0.98);
+}
+
+body.dark-mode .modal-buttons button {
+  background: rgba(0,0,0,0.1);
+  color: black;
+  border: 1px solid rgba(0,0,0,0.3);
+}
+
+body.dark-mode .modal-buttons button:hover {
+  background: rgba(0,0,0,0.2);
+  border-color: rgba(0,0,0,0.5);
+}
+
+.modal-checkbox-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0;
+  padding: 12px 0;
+}
+
+.modal-checkbox-container input[type="checkbox"] {
+  width: auto !important;
+  margin: 0 !important;
+  transform: scale(1.2);
+}
+
+.modal-checkbox-container label {
+  margin: 0 !important;
+  white-space: nowrap;
+  cursor: pointer;
+}
+    
+    .burger-menu {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.burger-button {
+  width: 40px;
+  height: 40px;
+  background: rgba(0, 0, 0, 0.5);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  padding: 8px;
+}
+
+.burger-button span {
+  width: 24px;
+  height: 2px;
+  background: white;
+  transition: all 0.3s;
+}
+
+.burger-button.active span:nth-child(1) {
+  transform: rotate(45deg) translate(5.5px, 5.5px);
+}
+
+.burger-button.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.burger-button.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(5.5px, -5.5px); 
+}
+
+.menu-content {
+  position: fixed;
+  top: 70px;
+  right: -300px;
+  width: 250px;
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 5px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: right 0.3s;
+}
+
+.menu-content.active {
+  right: 20px;
+}
+
+body.dark-mode .burger-button {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+body.dark-mode .burger-button span {
+  background: black;
+}
+
+body.dark-mode .menu-content {
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.menu-button {
+  text-align: left;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s;
+  width: auto;
+}
+
+body.dark-mode .menu-button {
+  background: rgba(255, 255, 255, 0.5);
+  color: black;
+}
+
+.menu-button:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+body.dark-mode .menu-button:hover {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.menu-section {
+      padding: 5px;
+    }
+
+    /* Make the first menu section buttons full width and stack vertically */
+    .menu-section:first-child {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .menu-section:first-child .menu-button {
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .menu-section-title {
+      color: inherit;
+      font-size: 0.9em;
+      margin-bottom: 5px;
+      display: block;
+    }
+
+    .menu-input-group {
+      display: flex;
+      gap: 5px;
+      margin-bottom: 5px;
+    }
+
+    .menu-input {
+      flex: 1;
+      padding: 5px;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 3px;
+      background: rgba(0,0,0,0.3);
+      color: white;
+    }
+
+    body.dark-mode .menu-input {
+      background: rgba(255,255,255,0.3);
+      color: black;
+    }
+
+    .menu-button.small {
+      padding: 4px 8px;
+    }
+
+    .menu-slider-group {
+      margin: 10px 0;
+    }
+
+    .menu-slider-group label {
+      font-size: 0.8em;
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    .menu-slider {
+      width: 100%;
+      margin: 5px 0;
+    }
+    /* Add to existing styles */
+    .menu-checkbox-group {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin-top: 5px;
+    }
+
+    .menu-checkbox {
+        accent-color: rgba(255, 255, 255, 0.7);
+    }
+
+    body.dark-mode .menu-checkbox {
+        accent-color: rgba(0, 0, 0, 0.7);
+    }
+
+/* Add after the .shortcut styles */
+.shortcut.dragging {
+  opacity: 0.5;
+  cursor: move;
+}
+
+.shortcut.drag-over {
+  border: 2px dashed #ffffff;
+}
+
+.section-row.drag-active {
+  min-height: var(--shortcut-size);
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+}
+
+/* Collapsed shortcuts styles */
+.chevron-button {
+  position: relative;
+  width: 25px;
+  height: var(--shortcut-size);
+  /* background: rgba(255, 255, 255, 0.1); */
+  /* border: 2px dashed rgba(255, 255, 255, 0.3); */
+  border-radius: 0px 28px 28px 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  /* transition: all 0.3s ease; */
+  /* backdrop-filter: blur(10px); */
+  flex: 0 0 auto;
+  /* border: 1px solid rgba(255, 255, 255, 0.2); */
+  background: linear-gradient(90deg,rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
+}
+
+.chevron-button:hover,
+.chevron-button:focus {
+  /* background: rgba(255, 255, 255, 0.2); */
+  /* border-color: rgba(255, 255, 255, 0.5); */
+  /* scale: 1.05; */
+  outline: none;
+}
+
+.chevron-icon {
+  /* font-size: 18px; */
+  color: white;
+  /* transition: transform 0.3s ease; */
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+}
+
+.chevron-button.expanded .chevron-icon {
+  transform: rotate(135deg);
+}
+
+body.dark-mode .chevron-icon {
+  /* color: #333; */
+  border-color: white;
+}
+
+.hidden-shortcuts-container {
+  display: none; /* Hidden by default */
+  gap: var(--gap-size);
+  opacity: 0;
+  overflow: hidden;
+  transition: opacity 0.4s ease;
+  /* Remove flex-wrap since we want individual items to be flex items of section-row */
+}
+
+.hidden-shortcuts-container.expanded {
+  display: contents; /* This makes the container "disappear" and its children become direct children of section-row */
+  opacity: 1;
+}
+
+.hidden-shortcut {
+  position: relative;
+  flex: 0 0 auto;
+  width: var(--shortcut-size);
+  height: var(--shortcut-size);
+  border-radius: 25px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: inherit;
+  background: none;
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+  opacity: 1;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+body:not(.edit-mode) .hidden-shortcut:hover::before,
+body:not(.edit-mode) .hidden-shortcut:hover {
+  scale: 1.1;
+}
+
+.hidden-shortcut::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  filter: blur(12px) brightness(0.5) contrast(0.8) opacity(0);
+  transform: scale(0.95, 0.95) translate(0%, -10%);
+  opacity: 1;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 1;
+  /* background-image: var(--shortcut-background); */
+  background-color: rgba(0,0,0,0.4);
+  transition: all 0.2s ease-in-out;
+}
+
+body.dark-mode .hidden-shortcut::before {
+  background-color: rgb(65, 65, 65);
+  filter: blur(12px) brightness(1) contrast(0.8) opacity(0.5);
+}
+
+.hidden-shortcut .shortcutimg {
+  margin-top: 10px;
+  object-fit: contain;
+  position: relative;
+  width: 50%;
+  height: 50%;
+  z-index: 2;
+  filter: drop-shadow(0 0 2px black) drop-shadow(0 0 var(--shadow-size) white);
+}
+
+body.dark-mode .hidden-shortcut .shortcutimg {
+  filter: drop-shadow(0 0 2px rgb(229, 229, 229)) drop-shadow(0 0 var(--shadow-size) black) drop-shadow(0 0 8px rgb(var(--dark-scfill)));
+}
+
+.hidden-shortcut .title {
+  position: relative;
+  z-index: 2;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  text-align: center;
+}
+
+.shortcut-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: var(--shortcut-size);
+}
+
+.shortcut-buttons {
+  display: none;
+  flex-direction: row;
+  gap: 10px;
+  width: 100%;
+  margin-top: 5px;
+}
+
+.edit-mode .shortcut-buttons {
+  display: flex;
+}
+
+.menu-button#autoFitEnabled {
+    width: 100%;
+    margin-top: 5px;
+}
+
+.menu-button#autoFitEnabled.active {
+    background: rgba(80, 130, 225, 0.7);
+    box-shadow: inset 0 0 8px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .menu-button#autoFitEnabled.active {
+    background: rgba(120, 160, 255, 0.9);
+    color: white;
+}
+
+.menu-section-header {
+  width: 100%;
+  text-align: left;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s;
+  position: relative;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.menu-section-header:hover {
+    background: rgba(0, 0, 0, 0.7);
+}
+
+body.dark-mode .menu-section-header {
+    background: rgba(255, 255, 255, 0.5);
+    color: black;
+}
+
+body.dark-mode .menu-section-header:hover {
+    background: rgba(255, 255, 255, 0.7);
+}
+
+.menu-section-header::after {
+  content: '▶';
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%) rotate(0deg);
+  transition: transform 0.2s ease-in-out;
+  font-size: 0.8em;
+}
+
+.menu-section-header.active::after {
+  transform: translateY(-50%) rotate(90deg);
+}
+
+.menu-section-content {
+    padding-left: 10px;
+    border-left: 1px solid rgba(255,255,255,0.1);
+    margin-left: 5px;
+    margin-top: 5px;
+}
+
+.collapsible > .menu-section-content {
+    display: none; /* Collapsed by default */
+}
+
+body.dark-mode .menu-section-content {
+    border-left: 1px solid rgba(0,0,0,0.1);
+}
