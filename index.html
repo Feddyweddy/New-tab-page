@@ -7,7 +7,6 @@
     // ===== CONFIGURATION =====
     // Change this to use a different links file (e.g., 'links-work.json', 'links-gaming.json')
     const LINKS_FILENAME = 'links-private.json';
-    const DEFAULT_BACKGROUND_URL = 'url("https://i.imgur.com/yXXStJ4.jpeg") no-repeat center center fixed;';
     // =========================
   </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.2/color-thief.umd.js"></script>
@@ -53,7 +52,7 @@
         <button class="menu-section-header" onclick="toggleSection(this)">Background</button>
         <div class="menu-section-content">
           <div class="menu-input-group">
-            <input type="text" id="bgUrlInput" placeholder="Image URL" class="menu-input" style="width: 100%">
+            <input type="text" id="bgUrlInput" placeholder="Image URL" class="menu-input" style="width: 65px">
             <button class="menu-button small" onclick="setBackgroundFromUrl()">Set</button>
           </div>
           <div class="menu-input-group">
@@ -122,7 +121,7 @@
       const content = header.nextElementSibling;
       // Check computed style to correctly determine visibility, even if set by CSS
       if (window.getComputedStyle(content).display === 'none') {
-        content.style.display = 'block';
+        content.style.display = 'flex';
       } else {
         content.style.display = 'none';
       }
@@ -204,6 +203,10 @@
           <div class="title">${item.title}</div>
         `;
         
+        // Apply correct theme class to the shortcut image
+        const shortcutImg = shortDiv.querySelector('.shortcutimg');
+        applyThemeToShortcutImg(shortcutImg);
+        
         shortcutWrapper.appendChild(shortDiv);
 
         const buttonsDiv = document.createElement('div');
@@ -247,6 +250,10 @@
           <div class="title">${item.title}</div>
         `;
         
+        // Apply correct theme class to the shortcut image
+        const shortcutImg = shortDiv.querySelector('.shortcutimg');
+        applyThemeToShortcutImg(shortcutImg);
+        
         shortcutWrapper.appendChild(shortDiv);
         row.appendChild(shortcutWrapper);
       });
@@ -254,19 +261,16 @@
       // Check if there are hidden shortcuts
       const hiddenShortcuts = links.filter(item => item.hidden);
       if (hiddenShortcuts.length > 0) {
-        // Create hidden shortcuts container for inline expansion
-        const hiddenContainer = document.createElement('div');
-        hiddenContainer.className = 'hidden-shortcuts-container';
-        
+        // Add hidden shortcuts directly to the row but with hidden class
         hiddenShortcuts.forEach((item, index) => {
           // Create wrapper for hidden shortcut and buttons
           const hiddenWrapper = document.createElement('div');
-          hiddenWrapper.className = 'shortcut-wrapper';
+          hiddenWrapper.className = 'shortcut-wrapper hidden-shortcut-wrapper';
           
           const hiddenShortcut = document.createElement('a');
           hiddenShortcut.href = item.url;
           hiddenShortcut.target = '_blank';
-          hiddenShortcut.className = 'hidden-shortcut';
+          hiddenShortcut.className = 'shortcut hidden-shortcut';
           hiddenShortcut.style.setProperty('--shortcut-background', `url("${item.image}")`);
           hiddenShortcut.setAttribute('title', item.title);
           hiddenShortcut.setAttribute('draggable', 'true');
@@ -274,13 +278,25 @@
           const actualIndex = links.findIndex(link => link === item);
           hiddenShortcut.setAttribute('data-index', actualIndex);
           
+          // Add drag and drop event listeners
+          hiddenShortcut.addEventListener('dragstart', handleDragStart);
+          hiddenShortcut.addEventListener('dragend', handleDragEnd);
+          hiddenShortcut.addEventListener('dragover', handleDragOver);
+          hiddenShortcut.addEventListener('dragenter', handleDragEnter);
+          hiddenShortcut.addEventListener('dragleave', handleDragLeave);
+          hiddenShortcut.addEventListener('drop', handleDrop);
+          
           hiddenShortcut.innerHTML = `
             <img src="${item.image}" alt="${item.title}" class="shortcutimg" />
             <div class="title">${item.title}</div>
           `;
           
+          // Apply correct theme class to the shortcut image
+          const hiddenShortcutImg = hiddenShortcut.querySelector('.shortcutimg');
+          applyThemeToShortcutImg(hiddenShortcutImg);
+          
           hiddenWrapper.appendChild(hiddenShortcut);
-          hiddenContainer.appendChild(hiddenWrapper);
+          row.appendChild(hiddenWrapper);
         });
         
         // Create chevron button
@@ -294,17 +310,22 @@
         
         chevronButton.addEventListener('click', () => {
           const isExpanded = chevronButton.classList.contains('expanded');
+          const hiddenWrappers = row.querySelectorAll('.hidden-shortcut-wrapper');
           
           if (isExpanded) {
-            // Collapsing: remove expanded class first to trigger exit animation
-            hiddenContainer.classList.remove('expanded');
+            // Collapsing: hide hidden shortcuts
+            hiddenWrappers.forEach(wrapper => {
+              wrapper.classList.remove('expanded');
+            });
             chevronButton.classList.remove('expanded');
             chevronButton.setAttribute('aria-expanded', 'false');
             chevronButton.setAttribute('aria-label', 'Show hidden shortcuts');
           } else {
-            // Expanding: add expanded class to trigger enter animation
+            // Expanding: show hidden shortcuts
+            hiddenWrappers.forEach(wrapper => {
+              wrapper.classList.add('expanded');
+            });
             chevronButton.classList.add('expanded');
-            hiddenContainer.classList.add('expanded');
             chevronButton.setAttribute('aria-expanded', 'true');
             chevronButton.setAttribute('aria-label', 'Hide hidden shortcuts');
           }
@@ -313,9 +334,11 @@
           updateToggleAllButtonText();
         });
 
-        // Add hidden container and chevron to row
-        row.appendChild(hiddenContainer);
+        // Add chevron to row
         row.appendChild(chevronButton);
+        
+        // Add class to indicate this row has a chevron
+        row.classList.add('has-chevron');
       }
     }
 
@@ -337,22 +360,30 @@
   }, 100); // Small delay to ensure all styles are computed
 }
 
+// Function to update chevron height to match its parent row
+function updateChevronHeight(chevronButton, row) {
+  if (!chevronButton || !row) return;
+  
+  // No need to set height manually since we use CSS height: 100% with top: 0 and bottom: 0
+  // This ensures the chevron automatically fills the full height of the row
+}
+
 function updateToggleAllButtonText() {
       const toggleButton = document.getElementById('toggleHiddenButton');
       if (!toggleButton) return;
       
-      const hiddenContainers = document.querySelectorAll('.hidden-shortcuts-container');
-      if (hiddenContainers.length === 0) {
+      const hiddenWrappers = document.querySelectorAll('.hidden-shortcut-wrapper');
+      if (hiddenWrappers.length === 0) {
         toggleButton.textContent = 'Show all hidden';
         return;
       }
       
-      const anyExpanded = Array.from(hiddenContainers).some(container => 
-        container.classList.contains('expanded')
+      const anyExpanded = Array.from(hiddenWrappers).some(wrapper => 
+        wrapper.classList.contains('expanded')
       );
       
-      const allExpanded = Array.from(hiddenContainers).every(container => 
-        container.classList.contains('expanded')
+      const allExpanded = Array.from(hiddenWrappers).every(wrapper => 
+        wrapper.classList.contains('expanded')
       );
       
       if (allExpanded) {
@@ -365,36 +396,38 @@ function updateToggleAllButtonText() {
     }
 
     function toggleAllHidden() {
-      const hiddenContainers = document.querySelectorAll('.hidden-shortcuts-container');
+      const hiddenWrappers = document.querySelectorAll('.hidden-shortcut-wrapper');
       const chevronButtons = document.querySelectorAll('.chevron-button');
       
-      if (hiddenContainers.length === 0) return;
+      if (hiddenWrappers.length === 0) return;
       
       // Check if all are currently expanded
-      const allExpanded = Array.from(hiddenContainers).every(container => 
-        container.classList.contains('expanded')
+      const allExpanded = Array.from(hiddenWrappers).every(wrapper => 
+        wrapper.classList.contains('expanded')
       );
       
-      // Toggle all containers and chevron buttons immediately
-      hiddenContainers.forEach((container, index) => {
-        const chevronButton = chevronButtons[index];
-        
+      // Toggle all wrappers and chevron buttons immediately
+      hiddenWrappers.forEach(wrapper => {
         if (allExpanded) {
           // Hide all
-          container.classList.remove('expanded');
-          if (chevronButton) {
-            chevronButton.classList.remove('expanded');
-            chevronButton.setAttribute('aria-expanded', 'false');
-            chevronButton.setAttribute('aria-label', 'Show hidden shortcuts');
-          }
+          wrapper.classList.remove('expanded');
         } else {
           // Show all
-          container.classList.add('expanded');
-          if (chevronButton) {
-            chevronButton.classList.add('expanded');
-            chevronButton.setAttribute('aria-expanded', 'true');
-            chevronButton.setAttribute('aria-label', 'Hide hidden shortcuts');
-          }
+          wrapper.classList.add('expanded');
+        }
+      });
+      
+      chevronButtons.forEach(chevronButton => {
+        if (allExpanded) {
+          // Hide all
+          chevronButton.classList.remove('expanded');
+          chevronButton.setAttribute('aria-expanded', 'false');
+          chevronButton.setAttribute('aria-label', 'Show hidden shortcuts');
+        } else {
+          // Show all
+          chevronButton.classList.add('expanded');
+          chevronButton.setAttribute('aria-expanded', 'true');
+          chevronButton.setAttribute('aria-label', 'Hide hidden shortcuts');
         }
       });
       
@@ -404,6 +437,15 @@ function updateToggleAllButtonText() {
 
     function toggleMode() {
       document.body.classList.toggle('dark-mode');
+      
+      // Toggle dark-mode class on all shortcut images
+      const shortcutImgs = document.querySelectorAll('.shortcutimg');
+      shortcutImgs.forEach(img => {
+        img.classList.toggle('dark-mode');
+      });
+      
+      // Update section-row gradients for the new theme
+      updateShortcutStyles();
       
       // Save the theme preference if persist settings is enabled
       if (localStorage.getItem('persistSettings') === 'true') {
@@ -680,7 +722,9 @@ function updateToggleAllButtonText() {
           // Update the UI element
           currentEditingShortcut.href = url;
           currentEditingShortcut.querySelector('.title').textContent = title;
-          currentEditingShortcut.querySelector('.shortcutimg').src = image;
+          const shortcutImg = currentEditingShortcut.querySelector('.shortcutimg');
+          shortcutImg.src = image;
+          applyThemeToShortcutImg(shortcutImg);
           currentEditingShortcut.style.setProperty('--shortcut-background', `url('${image}')`);
           currentEditingShortcut.setAttribute('data-hidden', hidden);
         } else {
@@ -799,6 +843,11 @@ function updateToggleAllButtonText() {
         const style = document.createElement('style');
         
         // Keep the section-based layout (was previously "unlimited")
+        const isDarkMode = document.body.classList.contains('dark-mode');
+        const sectionRowGradient = isDarkMode 
+            ? 'linear-gradient(to bottom, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.2) 80%, transparent 100%)'
+            : 'linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.2) 80%, transparent 100%)';
+        
         style.textContent = `
             .shortcut {
                 width: ${shortcutSize}px !important;
@@ -808,8 +857,13 @@ function updateToggleAllButtonText() {
                 gap: ${gapSize}px ${gapSize}px !important;
                 display: flex !important; 
                 flex-flow: row wrap !important;
-                background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.2) 80%, transparent 100%) !important;
+                background: ${sectionRowGradient} !important;
                 border-radius: 30px !important;
+                position: relative !important;
+                min-height: ${shortcutSize}px !important;
+            }
+            .section-row.has-chevron {
+                padding-right: 30px !important;
             }
             #container {
                 display: flex !important;
@@ -820,22 +874,28 @@ function updateToggleAllButtonText() {
                 display: flex !important;
                 flex-direction: column !important;
             }
-            .chevron-button {
+            .section-row {
                 position: relative !important;
+            }
+            .chevron-button {
+                position: absolute !important;
+                right: 0 !important;
+                top: 0 !important;
+                bottom: 0 !important;
                 width: 25px !important;
-                height: ${shortcutSize}px !important;
+                height: 100% !important;
                 border-radius: 0px 28px 28px 0px !important;
                 display: flex !important;
                 align-items: center !important;
                 justify-content: center !important;
                 cursor: pointer !important;
-                flex: 0 0 auto !important;
+                z-index: 10 !important;
                 background: linear-gradient(90deg,rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%) !important;
-                transition: background-color 0.3s ease, transform 0.2s ease !important;
+                transition: background 0.3s ease !important;
+                will-change: background !important;
             }
             .chevron-button:hover {
                 background: linear-gradient(90deg,rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.4) 100%) !important;
-                transform: scale(1.05) !important;
             }
             .chevron-button .chevron-icon {
                 color: white !important;
@@ -850,28 +910,27 @@ function updateToggleAllButtonText() {
             .chevron-button.expanded .chevron-icon {
                 transform: rotate(135deg) !important;
             }
-            .hidden-shortcuts-container {
-                max-width: 0 !important;
-                overflow: hidden !important;
-                transition: max-width 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
-                display: flex !important;
-                flex-direction: row !important;
-                gap: ${gapSize}px !important;
-            }
-            .hidden-shortcuts-container.expanded {
-                max-width: 1000px !important;
-            }
-            .hidden-shortcuts-container .hidden-shortcut {
+            .hidden-shortcut-wrapper {
+                display: none !important;
                 opacity: 0 !important;
-                transform: scale(0.9) translateX(-20px) !important;
+                transform: scale(0.9) !important;
                 transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-                transition-delay: 0s !important;
-                flex-shrink: 0 !important;
             }
-            .hidden-shortcuts-container.expanded .hidden-shortcut {
+            .hidden-shortcut-wrapper.expanded {
+                display: flex !important;
                 opacity: 1 !important;
-                transform: scale(1) translateX(0) !important;
-                transition-delay: 0.1s !important;
+                transform: scale(1) !important;
+                animation: fadeInScale 0.3s ease-out !important;
+            }
+            @keyframes fadeInScale {
+                from {
+                    opacity: 0;
+                    transform: scale(0.9);
+                }
+                to {
+                    opacity: 1;
+                    transform: scale(1);
+                }
             }
             body.dark-mode .chevron-button .chevron-icon {
                 border-color: white !important;
@@ -1121,6 +1180,12 @@ function updateToggleAllButtonText() {
         }
     });
 
+    // Update chevron heights on window resize
+    window.addEventListener('resize', () => {
+        // Chevron heights are now handled automatically by CSS
+        // No need for manual calculations
+    });
+
     // Initialize everything when the page loads
     loadLinks();
 
@@ -1129,6 +1194,8 @@ function updateToggleAllButtonText() {
         loadConfig();
         initializeUIValues();
         updateShortcutStyles();
+        // Apply theme to all existing shortcut images
+        applyThemeToAllShortcutImages();
     }, 200);
 
     // Load saved configuration function
@@ -1191,6 +1258,14 @@ function updateToggleAllButtonText() {
                     if (overlay) overlay.style.backgroundImage = config.backgroundImage;
                 }
                 
+                // Apply theme setting
+                if (config.darkMode !== undefined) {
+                    const isDarkMode = document.body.classList.contains('dark-mode');
+                    if (config.darkMode !== isDarkMode) {
+                        toggleMode();
+                    }
+                }
+                
                 // Apply background filters
                 updateBackgroundFilter();
                 
@@ -1199,6 +1274,23 @@ function updateToggleAllButtonText() {
                 console.warn('Error loading saved configuration:', error);
             }
         }
+    }
+
+    // Helper function to apply correct theme class to shortcut images
+    function applyThemeToShortcutImg(imgElement) {
+      if (document.body.classList.contains('dark-mode')) {
+        imgElement.classList.add('dark-mode');
+      } else {
+        imgElement.classList.remove('dark-mode');
+      }
+    }
+
+    // Helper function to apply theme to all existing shortcut images
+    function applyThemeToAllShortcutImages() {
+      const shortcutImgs = document.querySelectorAll('.shortcutimg');
+      shortcutImgs.forEach(img => {
+        applyThemeToShortcutImg(img);
+      });
     }
 
     // ...existing code...

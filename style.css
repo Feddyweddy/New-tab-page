@@ -25,10 +25,10 @@
     .background-overlay {
       position: fixed;
       top: -100px;
-      left: -100px;
+      /* left: -100px; */
       width: 110%;
       height: 110%;
-      background: url("https://i.imgur.com/yXXStJ4.jpeg") no-repeat center center fixed;
+      background: url("https://images.birdfact.com/production/where-do-ducks-sleep.jpg?w=1792&h=1024&q=80&fm=webp&fit=clip&dm=1657039243&s=2741ecbded8cdb82820e0c5575917f62") no-repeat center center fixed;
       background-size: cover;
       z-index: -1;
       filter:brightness(1) contrast(1);
@@ -97,6 +97,11 @@
       gap: var(--gap-size) var(--gap-size);
       background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.2) 80%, transparent 100%);
       border-radius: 30px;
+      position: relative; /* Needed for absolutely positioned chevron */
+    }
+
+    body.dark-mode .section-row {
+      background: linear-gradient(to bottom, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.2) 80%, transparent 100%);
     }
 
     .edit-mode .section-row {
@@ -166,12 +171,12 @@
 
     .shortcut::before {
       content: "";
-     chevron-button position: absolute;
+      position: absolute;
       top: 0;
       right: 0;
       bottom: 0;
       left: 0;
-      filter: blur(12px) brightness(0.5) contrast(0.8) opacity(0.7);
+      filter: blur(12px) brightness(0.5) contrast(0.8) opacity(0);
       transform: scale(0.95, 0.95) translate(0%, -10%);
       opacity: 1;
       background-size: contain;
@@ -184,7 +189,7 @@
     }
     .shortcut.dark-mode::before {
       background-color: rgb(65, 65, 65);
-      filter: blur(12px) brightness(1) contrast(0.8) opacity(0.5);
+      filter: blur(12px) brightness(1) contrast(0.8) opacity(0);
     }
 
     .shortcutimg {
@@ -549,7 +554,7 @@ body.dark-mode .modal-buttons button:hover {
 .burger-button {
   width: 40px;
   height: 40px;
-  background: rgba(0, 0, 0, 0.5);
+  background: #3a3a3a;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -564,7 +569,7 @@ body.dark-mode .modal-buttons button:hover {
 .burger-button span {
   width: 24px;
   height: 2px;
-  background: white;
+  background: #e0e0e0;
   transition: all 0.3s;
 }
 
@@ -585,7 +590,7 @@ body.dark-mode .modal-buttons button:hover {
   top: 70px;
   right: -300px;
   width: 250px;
-  background: rgba(0, 0, 0, 0.8);
+  background: #404040;
   border-radius: 5px;
   padding: 10px;
   display: flex;
@@ -599,15 +604,15 @@ body.dark-mode .modal-buttons button:hover {
 }
 
 body.dark-mode .burger-button {
-  background: rgba(255, 255, 255, 0.5);
+  background: #c0c0c0;
 }
 
 body.dark-mode .burger-button span {
-  background: black;
+  background: #404040;
 }
 
 body.dark-mode .menu-content {
-  background: rgba(255, 255, 255, 0.8);
+  background: #d0d0d0;
 }
 
 .menu-button {
@@ -615,24 +620,28 @@ body.dark-mode .menu-content {
   padding: 8px 12px;
   border: none;
   border-radius: 5px;
-  background: rgba(0, 0, 0, 0.5);
-  color: white;
+  background: #505050;
+  color: #e0e0e0;
   cursor: pointer;
   transition: background 0.3s;
   width: auto;
+  text-decoration: none;
+  display: block;
+  font-family: inherit;
+  font-size: inherit;
 }
 
 body.dark-mode .menu-button {
-  background: rgba(255, 255, 255, 0.5);
-  color: black;
+  background: #b0b0b0;
+  color: #404040;
 }
 
 .menu-button:hover {
-  background: rgba(0, 0, 0, 0.7);
+  background: #606060;
 }
 
 body.dark-mode .menu-button:hover {
-  background: rgba(255, 255, 255, 0.7);
+  background: #a0a0a0;
 }
 
 .menu-section {
@@ -647,6 +656,18 @@ body.dark-mode .menu-button:hover {
     }
 
     .menu-section:first-child .menu-button {
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    /* Make backup/restore section buttons full width and stack vertically */
+    .menu-section .menu-section-content {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .menu-section .menu-section-content .menu-button {
       width: 100%;
       box-sizing: border-box;
     }
@@ -730,20 +751,18 @@ body.dark-mode .menu-button:hover {
 
 /* Collapsed shortcuts styles */
 .chevron-button {
-  position: relative;
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
   width: 25px;
-  height: var(--shortcut-size);
-  /* background: rgba(255, 255, 255, 0.1); */
-  /* border: 2px dashed rgba(255, 255, 255, 0.3); */
+  height: 100%;
   border-radius: 0px 28px 28px 0px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  /* transition: all 0.3s ease; */
-  /* backdrop-filter: blur(10px); */
   flex: 0 0 auto;
-  /* border: 1px solid rgba(255, 255, 255, 0.2); */
   background: linear-gradient(90deg,rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
 }
 
@@ -837,7 +856,7 @@ body:not(.edit-mode) .hidden-shortcut:hover {
 
 body.dark-mode .hidden-shortcut::before {
   background-color: rgb(65, 65, 65);
-  filter: blur(12px) brightness(1) contrast(0.8) opacity(0.5);
+  filter: blur(12px) brightness(1) contrast(0.8) opacity(0);
 }
 
 .hidden-shortcut .shortcutimg {
@@ -902,8 +921,8 @@ body.dark-mode .menu-button#autoFitEnabled.active {
   padding: 8px 12px;
   border: none;
   border-radius: 5px;
-  background: rgba(0, 0, 0, 0.5);
-  color: white;
+  background: #505050;
+  color: #e0e0e0;
   cursor: pointer;
   transition: background 0.3s;
   position: relative;
@@ -912,16 +931,16 @@ body.dark-mode .menu-button#autoFitEnabled.active {
 }
 
 .menu-section-header:hover {
-    background: rgba(0, 0, 0, 0.7);
+    background: #606060;
 }
 
 body.dark-mode .menu-section-header {
-    background: rgba(255, 255, 255, 0.5);
-    color: black;
+    background: #b0b0b0;
+    color: #404040;
 }
 
 body.dark-mode .menu-section-header:hover {
-    background: rgba(255, 255, 255, 0.7);
+    background: #a0a0a0;
 }
 
 .menu-section-header::after {
