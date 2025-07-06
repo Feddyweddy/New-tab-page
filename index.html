@@ -34,30 +34,17 @@
         <button class="menu-section-header" onclick="toggleSection(this)">Layout options</button>
         <div class="menu-section-content">
           <div class="menu-slider-group">
-            <label>Shortcut size: <span id="shortcutSizeValue">124</span>px</label>
-            <input type="range" id="shortcutSizeSlider" min="64" max="192" value="124" class="menu-slider">
+            <label>Shortcut size: <span id="shortcutSizeValue">150</span>px</label>
+            <input type="range" id="shortcutSizeSlider" min="64" max="192" value="150" class="menu-slider">
           </div>
           <div class="menu-slider-group">
-            <label>Gap size: <span id="gapSizeValue">10</span>px</label>
-            <input type="range" id="gapSizeSlider" min="5" max="124" value="10" class="menu-slider">
+            <label>Gap size: <span id="gapSizeValue">5</span>px</label>
+            <input type="range" id="gapSizeSlider" min="5" max="124" value="5" class="menu-slider">
           </div>
           <div class="menu-slider-group">
-            <label>Glow: <span id="shadowValue">3</span>px</label>
-            <input type="range" id="shadowSlider" min="3" max="15" value="3" class="menu-slider">
+            <label>Glow: <span id="shadowValue">10</span>px</label>
+            <input type="range" id="shadowSlider" min="3" max="15" value="10" class="menu-slider">
           </div>
-          <div class="menu-input-group">
-            <label>Max columns:</label>
-            <span><select id="maxColumnsSelect" class="menu-input">
-                <option value="unlimited">Unlimited</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-              </select></span>
-          </div>
-          <button id="autoFitEnabled" class="menu-button" onclick="toggleAutoFit()">Auto fit</button>
         </div>
       </div>
       <hr class="hr">
@@ -130,37 +117,6 @@
     let editMode = false;
     let currentEditingShortcut = null;
     let currentEditingSectionName = null;
-
-    // Auto-fit state management
-let autoFitEnabled = false;
-
-function toggleAutoFit() {
-    const autoFitButton = document.getElementById('autoFitEnabled');
-    autoFitEnabled = !autoFitEnabled;
-    
-    if (autoFitEnabled) {
-        // Enable auto-fit: adjust sizes based on viewport
-        autoAdjustShortcutSize();
-        autoFitButton.textContent = 'Reset sizes';
-    } else {
-        // Disable auto-fit: reset to default hardcoded values
-        const shortcutSizeSlider = document.getElementById('shortcutSizeSlider');
-        const gapSizeSlider = document.getElementById('gapSizeSlider');
-        
-        shortcutSizeSlider.value = 124;
-        gapSizeSlider.value = 10;
-        
-        document.getElementById('shortcutSizeValue').textContent = 124;
-        document.getElementById('gapSizeValue').textContent = 10;
-        
-        updateShortcutStyles();
-        autoFitButton.textContent = 'Auto fit';
-    }
-    
-    if (localStorage.getItem('persistSettings') === 'true') {
-        saveConfig();
-    }
-}
 
     function toggleSection(header) {
       const content = header.nextElementSibling;
@@ -343,12 +299,8 @@ function toggleAutoFit() {
             // Collapsing: remove expanded class first to trigger exit animation
             hiddenContainer.classList.remove('expanded');
             chevronButton.classList.remove('expanded');
-            
-            // After animation completes, update aria attributes
-            setTimeout(() => {
-              chevronButton.setAttribute('aria-expanded', 'false');
-              chevronButton.setAttribute('aria-label', 'Show hidden shortcuts');
-            }, 400); // Match the transition duration
+            chevronButton.setAttribute('aria-expanded', 'false');
+            chevronButton.setAttribute('aria-label', 'Show hidden shortcuts');
           } else {
             // Expanding: add expanded class to trigger enter animation
             chevronButton.classList.add('expanded');
@@ -423,39 +375,31 @@ function updateToggleAllButtonText() {
         container.classList.contains('expanded')
       );
       
-      // Toggle all containers and chevron buttons with staggered timing
+      // Toggle all containers and chevron buttons immediately
       hiddenContainers.forEach((container, index) => {
         const chevronButton = chevronButtons[index];
         
-        // Add a small delay between each section for a wave effect
-        setTimeout(() => {
-          if (allExpanded) {
-            // Hide all
-            container.classList.remove('expanded');
-            if (chevronButton) {
-              chevronButton.classList.remove('expanded');
-              // Update aria attributes after animation completes
-              setTimeout(() => {
-                chevronButton.setAttribute('aria-expanded', 'false');
-                chevronButton.setAttribute('aria-label', 'Show hidden shortcuts');
-              }, 400);
-            }
-          } else {
-            // Show all
-            container.classList.add('expanded');
-            if (chevronButton) {
-              chevronButton.classList.add('expanded');
-              chevronButton.setAttribute('aria-expanded', 'true');
-              chevronButton.setAttribute('aria-label', 'Hide hidden shortcuts');
-            }
+        if (allExpanded) {
+          // Hide all
+          container.classList.remove('expanded');
+          if (chevronButton) {
+            chevronButton.classList.remove('expanded');
+            chevronButton.setAttribute('aria-expanded', 'false');
+            chevronButton.setAttribute('aria-label', 'Show hidden shortcuts');
           }
-        }, index * 100); // Stagger by 100ms for each section
+        } else {
+          // Show all
+          container.classList.add('expanded');
+          if (chevronButton) {
+            chevronButton.classList.add('expanded');
+            chevronButton.setAttribute('aria-expanded', 'true');
+            chevronButton.setAttribute('aria-label', 'Hide hidden shortcuts');
+          }
+        }
       });
       
-      // Update the toggle button text after all animations complete
-      setTimeout(() => {
-        updateToggleAllButtonText();
-      }, (hiddenContainers.length * 100) + 400);
+      // Update the toggle button text immediately
+      updateToggleAllButtonText();
     }
 
     function toggleMode() {
@@ -841,11 +785,9 @@ function updateToggleAllButtonText() {
     function updateShortcutStyles() {
         const shortcutSizeSlider = document.getElementById('shortcutSizeSlider');
         const gapSizeSlider = document.getElementById('gapSizeSlider');
-        const maxColumnsSelect = document.getElementById('maxColumnsSelect');
         
         const shortcutSize = shortcutSizeSlider.value;
         const gapSize = gapSizeSlider.value;
-        const maxColumns = maxColumnsSelect.value;
 
         document.getElementById('shortcutSizeValue').textContent = shortcutSize;
         document.getElementById('gapSizeValue').textContent = gapSize;
@@ -856,149 +798,85 @@ function updateToggleAllButtonText() {
 
         const style = document.createElement('style');
         
-        if (maxColumns === 'unlimited') {
-            // Unlimited: Keep the current section-based layout
-            style.textContent = `
-                .shortcut {
-                    width: ${shortcutSize}px !important;
-                    height: ${shortcutSize}px !important;
-                }
-                .section-row {
-                    gap: ${gapSize}px ${gapSize}px !important;
-                    display: flex !important; 
-                    flex-flow: row wrap !important;
-                    background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.2) 80%, transparent 100%) !important;
-                    border-radius: 30px !important;
-                }
-                #container {
-                    display: flex !important;
-                    flex-direction: row !important;
-                    flex-wrap: wrap !important;
-                }
-                .section-wrapper {
-                    display: flex !important;
-                    flex-direction: column !important;
-                }
-                .chevron-button {
-                    position: relative !important;
-                    width: 25px !important;
-                    height: ${shortcutSize}px !important;
-                    border-radius: 0px 28px 28px 0px !important;
-                    display: flex !important;
-                    align-items: center !important;
-                    justify-content: center !important;
-                    cursor: pointer !important;
-                    flex: 0 0 auto !important;
-                    background: linear-gradient(90deg,rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%) !important;
-                    transition: background-color 0.3s ease, transform 0.2s ease !important;
-                }
-                .chevron-button:hover {
-                    background: linear-gradient(90deg,rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.4) 100%) !important;
-                    transform: scale(1.05) !important;
-                }
-                .chevron-button .chevron-icon {
-                    color: white !important;
-                    border: solid white !important;
-                    border-width: 0 3px 3px 0 !important;
-                    display: inline-block !important;
-                    padding: 3px !important;
-                    transform: rotate(-45deg) !important;
-                    -webkit-transform: rotate(-45deg) !important;
-                    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-                }
-                .chevron-button.expanded .chevron-icon {
-                    transform: rotate(135deg) !important;
-                }
-                .hidden-shortcuts-container .hidden-shortcut {
-                    opacity: 0 !important;
-                    transform: scale(0.8) translateY(-10px) !important;
-                    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
-                    transition-delay: 0s !important;
-                }
-                .hidden-shortcuts-container.expanded .hidden-shortcut {
-                    opacity: 1 !important;
-                    transform: scale(1) translateY(0) !important;
-                    transition-delay: 0.1s !important;
-                }
-                .hidden-shortcuts-container:not(.expanded) .hidden-shortcut {
-                    display: none !important;
-                }
-                body.dark-mode .chevron-button .chevron-icon {
-                    border-color: white !important;
-                }
-            `;
-        } else {
-            // Limited columns: Change to global grid layout
-            const totalWidth = parseInt(maxColumns) * (parseInt(shortcutSize) + parseInt(gapSize)) - parseInt(gapSize);
-            style.textContent = `
-                .shortcut, .hidden-shortcut {
-                    width: ${shortcutSize}px !important;
-                    height: ${shortcutSize}px !important;
-                }
-                #container {
-                    display: grid !important;
-                    grid-template-columns: repeat(${maxColumns}, ${shortcutSize}px) !important;
-                    gap: ${gapSize}px !important;
-                    justify-content: flex-start !important;
-                    align-items: start !important;
-                    width: ${totalWidth}px !important;
-                }
-                .section-wrapper {
-                    display: contents !important;
-                }
-                .section-title {
-                    grid-column: 1 / -1 !important;
-                    margin: 20px 0 10px 0 !important;
-                }
-                .section-row {
-                    display: grid !important;
-                    grid-template-columns: subgrid !important;
-                    grid-column: 1 / -1 !important;
-                    gap: ${gapSize}px !important;
-                    background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.2) 80%, transparent 100%) !important;
-                    border-radius: 25px !important;
-                    padding: ${gapSize}px !important;
-                    margin-bottom: ${gapSize}px !important;
-                }
-                .shortcut-wrapper {
-                    display: contents !important;
-                }
-                .hidden-shortcuts-container {
-                    display: contents !important;
-                }
-                .hidden-shortcuts-container:not(.expanded) .hidden-shortcut {
-                    display: none !important;
-                }
-                .chevron-button {
-                    position: relative !important;
-                    width: 25px !important;
-                    height: ${shortcutSize}px !important;
-                    border-radius: 0px 28px 28px 0px !important;
-                    display: flex !important;
-                    align-items: center !important;
-                    justify-content: center !important;
-                    cursor: pointer !important;
-                    flex: 0 0 auto !important;
-                    background: linear-gradient(90deg,rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%) !important;
-                }
-                .chevron-button .chevron-icon {
-                    color: white !important;
-                    border: solid white !important;
-                    border-width: 0 3px 3px 0 !important;
-                    display: inline-block !important;
-                    padding: 3px !important;
-                    transform: rotate(-45deg) !important;
-                    -webkit-transform: rotate(-45deg) !important;
-                    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-                }
-                .chevron-button.expanded .chevron-icon {
-                    transform: rotate(135deg) !important;
-                }
-                body.dark-mode .chevron-button .chevron-icon {
-                    border-color: white !important;
-                }
-            `;
-        }
+        // Keep the section-based layout (was previously "unlimited")
+        style.textContent = `
+            .shortcut {
+                width: ${shortcutSize}px !important;
+                height: ${shortcutSize}px !important;
+            }
+            .section-row {
+                gap: ${gapSize}px ${gapSize}px !important;
+                display: flex !important; 
+                flex-flow: row wrap !important;
+                background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.2) 80%, transparent 100%) !important;
+                border-radius: 30px !important;
+            }
+            #container {
+                display: flex !important;
+                flex-direction: row !important;
+                flex-wrap: wrap !important;
+            }
+            .section-wrapper {
+                display: flex !important;
+                flex-direction: column !important;
+            }
+            .chevron-button {
+                position: relative !important;
+                width: 25px !important;
+                height: ${shortcutSize}px !important;
+                border-radius: 0px 28px 28px 0px !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                cursor: pointer !important;
+                flex: 0 0 auto !important;
+                background: linear-gradient(90deg,rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%) !important;
+                transition: background-color 0.3s ease, transform 0.2s ease !important;
+            }
+            .chevron-button:hover {
+                background: linear-gradient(90deg,rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.4) 100%) !important;
+                transform: scale(1.05) !important;
+            }
+            .chevron-button .chevron-icon {
+                color: white !important;
+                border: solid white !important;
+                border-width: 0 3px 3px 0 !important;
+                display: inline-block !important;
+                padding: 3px !important;
+                transform: rotate(-45deg) !important;
+                -webkit-transform: rotate(-45deg) !important;
+                transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            }
+            .chevron-button.expanded .chevron-icon {
+                transform: rotate(135deg) !important;
+            }
+            .hidden-shortcuts-container {
+                max-width: 0 !important;
+                overflow: hidden !important;
+                transition: max-width 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+                display: flex !important;
+                flex-direction: row !important;
+                gap: ${gapSize}px !important;
+            }
+            .hidden-shortcuts-container.expanded {
+                max-width: 1000px !important;
+            }
+            .hidden-shortcuts-container .hidden-shortcut {
+                opacity: 0 !important;
+                transform: scale(0.9) translateX(-20px) !important;
+                transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+                transition-delay: 0s !important;
+                flex-shrink: 0 !important;
+            }
+            .hidden-shortcuts-container.expanded .hidden-shortcut {
+                opacity: 1 !important;
+                transform: scale(1) translateX(0) !important;
+                transition-delay: 0.1s !important;
+            }
+            body.dark-mode .chevron-button .chevron-icon {
+                border-color: white !important;
+            }
+        `;
 
         // Remove any previous dynamic styles
         const existingStyle = document.getElementById('dynamic-shortcut-styles');
@@ -1013,45 +891,9 @@ function updateToggleAllButtonText() {
         }
     }
 
-    function autoAdjustShortcutSize() {
-        const viewportWidth = window.innerWidth;
-        const shortcutSizeSlider = document.getElementById('shortcutSizeSlider');
-        const gapSizeSlider = document.getElementById('gapSizeSlider');
-        
-        // Shortcut size scaling
-        // - Base size: 64px at 400px viewport
-        // - Increases by 4px every 50px of viewport width
-        // - Clamp between 64px and 184px
-        const baseShortcutSize = 64;
-        const shortcutGrowthRate = 4 / 50; // 4px increase per 50px of width
-        const shortcutSize = Math.round(baseShortcutSize + (viewportWidth - 400) * shortcutGrowthRate);
-        const newShortcutSize = Math.max(64, Math.min(184, shortcutSize));
-
-        // Gap size scaling
-        // - Base size: 5px at 400px viewport
-        // - Increases by 2px every 50px of viewport width
-        // - Clamp between 5px and 40px
-        const baseGapSize = 5;
-        const gapGrowthRate = 2 / 50; // 2px increase per 50px of width
-        const gapSize = Math.round(baseGapSize + (viewportWidth - 400) * gapGrowthRate);
-        const newGapSize = Math.max(5, Math.min(40, gapSize));
-
-        // Update shortcut size slider and value
-        shortcutSizeSlider.value = newShortcutSize;
-        document.getElementById('shortcutSizeValue').textContent = newShortcutSize;
-        
-        // Update gap size slider and value
-        gapSizeSlider.value = newGapSize;
-        document.getElementById('gapSizeValue').textContent = newGapSize;
-        
-        // Update styles
-        updateShortcutStyles();
-    }
-
     function saveConfig() {
         const shortcutSizeSlider = document.getElementById('shortcutSizeSlider');
         const gapSizeSlider = document.getElementById('gapSizeSlider');
-        const maxColumnsSelect = document.getElementById('maxColumnsSelect');
         const shadowSlider = document.getElementById('shadowSlider');
         
         const config = {
@@ -1059,11 +901,9 @@ function updateToggleAllButtonText() {
             backgroundImage: document.querySelector('.background-overlay').style.backgroundImage,
             timestamp: new Date().toISOString(),
             linksData: null,
-            shortcutSize: shortcutSizeSlider ? shortcutSizeSlider.value : 124,
-            gapSize: gapSizeSlider ? gapSizeSlider.value : 10,
-            maxColumns: maxColumnsSelect ? maxColumnsSelect.value : 'unlimited',
-            autoFitEnabled: autoFitEnabled,
-            shadowSize: shadowSlider ? shadowSlider.value : 3,
+            shortcutSize: shortcutSizeSlider ? shortcutSizeSlider.value : 150,
+            gapSize: gapSizeSlider ? gapSizeSlider.value : 5,
+            shadowSize: shadowSlider ? shadowSlider.value : 10,
             blur: document.getElementById('blurSlider') ? document.getElementById('blurSlider').value : 0,
             brightness: document.getElementById('brightnessSlider') ? document.getElementById('brightnessSlider').value : 100,
             contrast: document.getElementById('contrastSlider') ? document.getElementById('contrastSlider').value : 100
@@ -1141,16 +981,12 @@ function updateToggleAllButtonText() {
         // Add event listeners for layout sliders
         const shortcutSizeSlider = document.getElementById('shortcutSizeSlider');
         const gapSizeSlider = document.getElementById('gapSizeSlider');
-        const maxColumnsSelect = document.getElementById('maxColumnsSelect');
         
         if (shortcutSizeSlider) {
             shortcutSizeSlider.addEventListener('input', updateShortcutStyles);
         }
         if (gapSizeSlider) {
             gapSizeSlider.addEventListener('input', updateShortcutStyles);
-        }
-        if (maxColumnsSelect) {
-            maxColumnsSelect.addEventListener('change', updateShortcutStyles);
         }
         
         // Initialize slider values
@@ -1217,9 +1053,7 @@ function updateToggleAllButtonText() {
                     timestamp: new Date().toISOString(),
                     linksData: data,
                     shortcutSize: document.getElementById('shortcutSizeSlider').value,
-                    gapSize: document.getElementById('gapSizeSlider').value,
-                    maxColumns: document.getElementById('maxColumnsSelect').value,
-                    autoFitEnabled: autoFitEnabled
+                    gapSize: document.getElementById('gapSizeSlider').value
                 };
                 
                 const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' });
@@ -1254,11 +1088,6 @@ function updateToggleAllButtonText() {
                     }
                     if (config.shortcutSize) document.getElementById('shortcutSizeSlider').value = config.shortcutSize;
                     if (config.gapSize) document.getElementById('gapSizeSlider').value = config.gapSize;
-                    if (config.maxColumns) document.getElementById('maxColumnsSelect').value = config.maxColumns;
-                    if (config.autoFitEnabled !== undefined) {
-                        autoFitEnabled = config.autoFitEnabled;
-                        document.getElementById('autoFitEnabled').textContent = autoFitEnabled ? 'Reset sizes' : 'Auto fit';
-                    }
                     updateShortcutStyles();
                     saveConfig();
                 } catch (err) {
@@ -1309,15 +1138,6 @@ function updateToggleAllButtonText() {
             try {
                 const config = JSON.parse(savedConfig);
                 
-                // Apply auto-fit state
-                if (config.autoFitEnabled !== undefined) {
-                    autoFitEnabled = config.autoFitEnabled;
-                    const autoFitButton = document.getElementById('autoFitEnabled');
-                    if (autoFitButton) {
-                        autoFitButton.textContent = autoFitEnabled ? 'Reset sizes' : 'Auto fit';
-                    }
-                }
-                
                 // Apply other settings
                 if (config.shortcutSize) {
                     const slider = document.getElementById('shortcutSizeSlider');
@@ -1332,10 +1152,6 @@ function updateToggleAllButtonText() {
                         slider.value = config.gapSize;
                         document.getElementById('gapSizeValue').textContent = config.gapSize;
                     }
-                }
-                if (config.maxColumns) {
-                    const select = document.getElementById('maxColumnsSelect');
-                    if (select) select.value = config.maxColumns;
                 }
                 if (config.shadowSize) {
                     const slider = document.getElementById('shadowSlider');
