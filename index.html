@@ -5,7 +5,7 @@
   <script>
     // ===== CONFIGURATION =====
     // Change this to use a different links file (e.g., 'links-work.json', 'links-gaming.json')
-    const LINKS_FILENAME = 'links.json';
+    const LINKS_FILENAME = 'links-private.json';
     // =========================
   </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.2/color-thief.umd.js"></script>
@@ -774,19 +774,16 @@ body.dark-mode .chevron-icon {
 }
 
 .hidden-shortcuts-container {
-  display: flex;
+  display: none; /* Hidden by default */
   gap: var(--gap-size);
-  max-width: 0;
-  height: 0; /* Prevent taking up vertical space when collapsed */
   opacity: 0;
   overflow: hidden;
-  transition: max-width 0.4s ease, opacity 0.4s ease, height 0.4s ease;
-  flex-wrap: wrap;
+  transition: opacity 0.4s ease;
+  /* Remove flex-wrap since we want individual items to be flex items of section-row */
 }
 
 .hidden-shortcuts-container.expanded {
-  max-width: 2000px; /* Large enough to accommodate hidden shortcuts */
-  height: auto; /* Allow natural height when expanded */
+  display: contents; /* This makes the container "disappear" and its children become direct children of section-row */
   opacity: 1;
 }
 
